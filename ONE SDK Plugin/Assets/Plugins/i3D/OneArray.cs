@@ -2,7 +2,7 @@
 
 namespace i3D
 {
-    public class OneArray
+    public partial class OneArray
     {
         internal IntPtr Ptr { get { return _ptr; } }
 

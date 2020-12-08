@@ -9,6 +9,8 @@ namespace i3D.Exceptions
         public OneInvalidErrorCodeException(int code)
         {
             Code = code;
+            
+            // TODO: message
         }
     }
 }

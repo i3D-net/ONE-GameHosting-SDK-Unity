@@ -22,6 +22,8 @@ namespace i3D
 
                 int code = one_server_status(_ptr, out statusPtr);
 
+                OneErrorValidator.Validate(code);
+
                 int status = statusPtr.ToInt32();
                 
                 if (!Enum.IsDefined(typeof(OneServerStatus), status))

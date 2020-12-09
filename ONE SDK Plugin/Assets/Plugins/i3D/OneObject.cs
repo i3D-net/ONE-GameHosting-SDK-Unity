@@ -2,7 +2,7 @@
 
 namespace i3D
 {
-    public class OneObject
+    public partial class OneObject
     {
         internal IntPtr Ptr { get { return _ptr; } }
 

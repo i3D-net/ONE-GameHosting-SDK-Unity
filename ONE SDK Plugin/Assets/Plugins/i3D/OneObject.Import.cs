@@ -14,7 +14,7 @@ namespace i3D
         /// <param name="obj">A pointer that will be set to point to the new OneObjectPtr.</param>
         /// <returns>Error code.</returns>
         [DllImport(DllName)]
-        private static extern int one_object_create(IntPtr obj);
+        private static extern int one_object_create(out IntPtr obj);
 
         /// <summary>
         /// Must be called to free an object created by one_object_create.
@@ -126,7 +126,7 @@ namespace i3D
         /// <param name="val">Non-null pointer to set the value on.</param>
         /// <returns>Error code.</returns>
         [DllImport(DllName, CharSet = CharSet.Auto)]
-        private static extern int one_object_val_array(IntPtr obj, string key, IntPtr val);
+        private static extern int one_object_val_array(IntPtr obj, string key, out IntPtr val);
 
         /// <summary>
         /// Retrieves and sets the <see cref="OneObject"/> value from the object. The given value
@@ -137,7 +137,7 @@ namespace i3D
         /// <param name="val">Non-null pointer to set the value on.</param>
         /// <returns>Error code.</returns>
         [DllImport(DllName, CharSet = CharSet.Auto)]
-        private static extern int one_object_val_object(IntPtr obj, string key, IntPtr val);
+        private static extern int one_object_val_object(IntPtr obj, string key, out IntPtr val);
 
         /// <summary>
         /// Allows setting a <see cref="bool"/> sub key/value pair on the object.

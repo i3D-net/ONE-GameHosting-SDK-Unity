@@ -66,6 +66,9 @@ namespace i3D
 
         internal OneArray(IntPtr ptr)
         {
+            if (ptr == IntPtr.Zero)
+                throw new ArgumentNullException("ptr");
+
             _ptr = ptr;
         }
 
@@ -221,7 +224,7 @@ namespace i3D
             int code = one_array_val_string(_ptr, position, ref chars, size);
             OneErrorValidator.Validate(code);
 
-            return chars.ToString();
+            return new string(chars);
         }
 
         public OneArray GetArray(uint position)

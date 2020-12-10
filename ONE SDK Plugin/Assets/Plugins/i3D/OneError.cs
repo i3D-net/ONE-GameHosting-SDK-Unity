@@ -123,7 +123,6 @@
         ValidationSizeIsNullptr,
         ValidationValIsNullptr,
         ValidationValSizeIsTooSmall,
-        ValidationVersionIsNullptr,
-        Count
+        ValidationVersionIsNullptr
     }
 }

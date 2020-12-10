@@ -147,8 +147,8 @@ namespace i3D
                 case OneError.ValidationValSizeIsTooSmall:
                 case OneError.ValidationVersionIsNullptr:
                     throw new OneValidationException(error);
-                case OneError.Count:
-                    throw new OneCountException(error);
+                default:
+                    throw new OneInvalidErrorCodeException(errorCode);
             }
         }
     }

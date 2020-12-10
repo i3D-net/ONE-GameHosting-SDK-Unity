@@ -5,7 +5,7 @@ namespace i3D
 {
     public partial class OneObject
     {
-        private const string DllName = "clib.dll";
+        private const string DllName = "one_arcus.dll";
 
         /// <summary>
         /// Create a new object that can be used as a key value in a One protocol message.

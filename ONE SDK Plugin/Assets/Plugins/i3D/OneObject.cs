@@ -11,13 +11,8 @@ namespace i3D
 
         public OneObject()
         {
-            IntPtr ptr;
-
-            int code = one_object_create(out ptr);
-
+            int code = one_object_create(out _ptr);
             OneErrorValidator.Validate(code);
-
-            _ptr = Marshal.ReadIntPtr(ptr);
         }
 
         public OneObject(IntPtr ptr)

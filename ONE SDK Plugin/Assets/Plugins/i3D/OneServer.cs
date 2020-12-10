@@ -33,11 +33,11 @@ namespace i3D
             }
         }
 
-        public OneServer() : this(null)
+        public OneServer(ushort port) : this(null, port)
         {
         }
 
-        public OneServer(Action<OneLogLevel, string> logCallback)
+        public OneServer(Action<OneLogLevel, string> logCallback, ushort port)
         {
             _logCallback = logCallback;
 
@@ -59,18 +59,14 @@ namespace i3D
             code = one_server_set_application_instance_information_callback(
                 _ptr, ApplicationInstanceInformationCallback, IntPtr.Zero);
             OneErrorValidator.Validate(code);
+
+            code = one_server_listen(_ptr, port);
+            OneErrorValidator.Validate(code);
         }
 
         public void Shutdown()
         {
             int code = one_server_shutdown(_ptr);
-
-            OneErrorValidator.Validate(code);
-        }
-
-        public void Listen(ushort port)
-        {
-            int code = one_server_listen(_ptr, port);
 
             OneErrorValidator.Validate(code);
         }
@@ -91,7 +87,7 @@ namespace i3D
                                  OneObject additionalData)
         {
             int code = one_server_set_live_state(_ptr, players, maxPlayers, name, map, mode, version,
-                                                 additionalData.Ptr);
+                                                 additionalData != null ? additionalData.Ptr : IntPtr.Zero);
 
             OneErrorValidator.Validate(code);
         }

@@ -5,7 +5,7 @@ namespace i3D
 {
     public partial class OneServer
     {
-        private const string DllName = "clib.dll";
+        private const string DllName = "one_arcus.dll";
 
         [DllImport(DllName, CharSet = CharSet.Auto)]
         private static extern int one_server_create(Action<int, string> logFn, out IntPtr server);

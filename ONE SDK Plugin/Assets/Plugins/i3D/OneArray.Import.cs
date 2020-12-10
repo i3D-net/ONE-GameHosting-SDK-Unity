@@ -5,7 +5,7 @@ namespace i3D
 {
     public partial class OneArray
     {
-        private const string DllName = "clib.dll";
+        private const string DllName = "one_arcus.dll";
 
         /// <summary>
         /// Creates a new array. Must be freed with one_array_destroy. Thread-safe.

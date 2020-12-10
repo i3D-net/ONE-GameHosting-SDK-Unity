@@ -46,17 +46,12 @@ namespace i3D
 
         internal IntPtr Ptr { get { return _ptr; } }
 
-        private readonly IntPtr _ptr;
+        private IntPtr _ptr;
 
         public OneArray()
         {
-            IntPtr ptr;
-
-            int code = one_array_create(out ptr);
-
+            int code = one_array_create(out _ptr);
             OneErrorValidator.Validate(code);
-
-            _ptr = Marshal.ReadIntPtr(ptr);
         }
 
         public OneArray(int size) : this()

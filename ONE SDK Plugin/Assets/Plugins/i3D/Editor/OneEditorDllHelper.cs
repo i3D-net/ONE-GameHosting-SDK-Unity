@@ -9,9 +9,9 @@ namespace i3D
     /// Helper class that adds the plugin folder to PATH so Unity Editor can find the DLL.
     /// </summary>
     [InitializeOnLoad]
-    public class OneDllHelper
+    public class OneEditorDllHelper
     {
-        static OneDllHelper()
+        static OneEditorDllHelper()
         {
             string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
             string dllPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar +

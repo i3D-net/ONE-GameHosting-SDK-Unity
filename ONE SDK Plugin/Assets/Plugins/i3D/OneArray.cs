@@ -105,7 +105,12 @@ namespace i3D
 
         public void PushString(string value)
         {
-            int code = one_array_push_back_string(_ptr, value);
+            int code;
+
+            using (var value8 = new Utf8CharArray(value))
+            {
+                code = one_array_push_back_string(_ptr, value8);
+            }
 
             OneErrorValidator.Validate(code);
         }
@@ -214,12 +219,17 @@ namespace i3D
         public string GetString(uint position)
         {
             int size = GetStringSize(position);
-            char[] chars = new char[size];
 
-            int code = one_array_val_string(_ptr, position, ref chars, size);
+            var result8 = new Utf8CharArray("");
+
+            int code = one_array_val_string(_ptr, position, result8, size);
             OneErrorValidator.Validate(code);
 
-            return new string(chars);
+            result8.ReadPtr();
+            var result = result8.ToString();
+            result8.Dispose();
+
+            return result;
         }
 
         public OneArray GetArray(uint position)
@@ -258,7 +268,12 @@ namespace i3D
 
         public void SetString(uint position, string value)
         {
-            int code = one_array_set_val_string(_ptr, position, value);
+            int code;
+
+            using (var value8 = new Utf8CharArray(value))
+            {
+                code = one_array_set_val_string(_ptr, position, value8);
+            }
 
             OneErrorValidator.Validate(code);
         }

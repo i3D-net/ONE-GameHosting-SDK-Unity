@@ -95,8 +95,16 @@ namespace i3D
                                  string version,
                                  OneObject additionalData)
         {
-            int code = one_server_set_live_state(_ptr, players, maxPlayers, name, map, mode, version,
+            int code;
+
+            using (var name8 = new Utf8CharArray(name))
+            using (var map8 = new Utf8CharArray(map))
+            using (var mode8 = new Utf8CharArray(mode))
+            using (var version8 = new Utf8CharArray(version))
+            {
+                code = one_server_set_live_state(_ptr, players, maxPlayers, name8, map8, mode8, version8,
                                                  additionalData != null ? additionalData.Ptr : IntPtr.Zero);
+            }
 
             OneErrorValidator.Validate(code);
         }
@@ -108,11 +116,9 @@ namespace i3D
             OneErrorValidator.Validate(code);
         }
 
-        private int a = 0;
-
-        private static void LogCallback(int level, string log)
+        private static void LogCallback(int level, IntPtr log)
         {
-            Debug.LogFormat("{0}: {1}", level, log);
+            Debug.LogFormat("{0}: {1}", level, new Utf8CharArray(log));
             /// Debug.LogFormat("{0}: {1}", a, level);
             // Debug.LogFormat("{0}: {1}", a, log);
             // Debug.LogFormat("{0}: {1}", a, _logCallback);

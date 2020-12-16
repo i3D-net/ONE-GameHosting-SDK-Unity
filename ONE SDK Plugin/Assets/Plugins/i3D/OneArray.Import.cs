@@ -105,8 +105,8 @@ namespace i3D
         /// <param name="array">A pointer that will be set to point to the new OneArrayPtr.</param>
         /// <param name="val">The value to add as a new element.</param>
         /// <returns>Error code.</returns>
-        [DllImport(DllName, CharSet = CharSet.Auto)]
-        private static extern int one_array_push_back_string(IntPtr array, string val);
+        [DllImport(DllName)]
+        private static extern int one_array_push_back_string(IntPtr array, IntPtr val);
 
         /// <summary>
         /// Adds a <see cref="OneArray"/> element value to the back of the array. The array
@@ -229,8 +229,8 @@ namespace i3D
         /// <param name="size">Size of the value buffer that can be written to.
         /// Must be equal to size obtained via one_array_val_string_size.</param>
         /// <returns>Error code.</returns>
-        [DllImport(DllName, CharSet = CharSet.Auto)]
-        private static extern int one_array_val_string(IntPtr array, uint pos, ref char[] val, int size);
+        [DllImport(DllName)]
+        private static extern int one_array_val_string(IntPtr array, uint pos, IntPtr val, int size);
 
         /// <summary>
         /// Writes the key value to the given character buffer.
@@ -279,8 +279,8 @@ namespace i3D
         /// <param name="pos">The position in the array to set the value in. Must be less than one_array_size.</param>
         /// <param name="val">The value to set.</param>
         /// <returns>Error code.</returns>
-        [DllImport(DllName, CharSet = CharSet.Auto)]
-        private static extern int one_array_set_val_string(IntPtr array, uint pos, string val);
+        [DllImport(DllName)]
+        private static extern int one_array_set_val_string(IntPtr array, uint pos, IntPtr val);
 
         /// <summary>
         /// Allows setting a <see cref="OneArray"/> sub key/value pair on the array.

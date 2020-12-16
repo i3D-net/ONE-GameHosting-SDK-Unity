@@ -26,7 +26,12 @@ namespace i3D
         public bool IsBool(string key)
         {
             bool result;
-            int code = one_object_is_val_bool(_ptr, key, out result);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_is_val_bool(_ptr, key8, out result);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -36,7 +41,12 @@ namespace i3D
         public bool IsInt(string key)
         {
             bool result;
-            int code = one_object_is_val_int(_ptr, key, out result);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_is_val_int(_ptr, key8, out result);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -46,7 +56,12 @@ namespace i3D
         public bool IsString(string key)
         {
             bool result;
-            int code = one_object_is_val_string(_ptr, key, out result);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_is_val_string(_ptr, key8, out result);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -56,7 +71,12 @@ namespace i3D
         public bool IsArray(string key)
         {
             bool result;
-            int code = one_object_is_val_array(_ptr, key, out result);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_is_val_array(_ptr, key8, out result);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -66,7 +86,12 @@ namespace i3D
         public bool IsObject(string key)
         {
             bool result;
-            int code = one_object_is_val_object(_ptr, key, out result);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_is_val_object(_ptr, key8, out result);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -76,7 +101,12 @@ namespace i3D
         public bool GetBool(string key)
         {
             bool value;
-            int code = one_object_val_bool(_ptr, key, out value);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_val_bool(_ptr, key8, out value);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -86,7 +116,12 @@ namespace i3D
         public int GetInt(string key)
         {
             int value;
-            int code = one_object_val_int(_ptr, key, out value);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_val_int(_ptr, key8, out value);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -96,7 +131,12 @@ namespace i3D
         public int GetStringSize(string key)
         {
             int size;
-            int code = one_object_val_string_size(_ptr, key, out size);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_val_string_size(_ptr, key8, out size);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -106,18 +146,33 @@ namespace i3D
         public string GetString(string key)
         {
             int size = GetStringSize(key);
-            char[] chars = new char[size];
 
-            int code = one_object_val_string(_ptr, key, chars, size);
+            var result8 = new Utf8CharArray("");
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_val_string(_ptr, key8, result8, size);
+            }
+
             OneErrorValidator.Validate(code);
 
-            return new string(chars);
+            result8.ReadPtr();
+            var result = result8.ToString();
+            result8.Dispose();
+
+            return result;
         }
 
         public OneArray GetArray(string key)
         {
             IntPtr ptr;
-            int code = one_object_val_array(_ptr, key, out ptr);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_val_array(_ptr, key8, out ptr);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -127,7 +182,12 @@ namespace i3D
         public OneObject GetObject(string key)
         {
             IntPtr ptr;
-            int code = one_object_val_object(_ptr, key, out ptr);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_val_object(_ptr, key8, out ptr);
+            }
 
             OneErrorValidator.Validate(code);
 
@@ -136,35 +196,61 @@ namespace i3D
 
         public void SetBool(string key, bool value)
         {
-            int code = one_object_set_val_bool(_ptr, key, value);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_set_val_bool(_ptr, key8, value);
+            }
 
             OneErrorValidator.Validate(code);
         }
 
         public void SetInt(string key, int value)
         {
-            int code = one_object_set_val_int(_ptr, key, value);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_set_val_int(_ptr, key8, value);
+            }
 
             OneErrorValidator.Validate(code);
         }
 
         public void SetString(string key, string value)
         {
-            int code = one_object_set_val_string(_ptr, key, value);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            using (var value8 = new Utf8CharArray(value))
+            {
+                code = one_object_set_val_string(_ptr, key8, value8);
+            }
 
             OneErrorValidator.Validate(code);
         }
 
         public void SetArray(string key, OneArray value)
         {
-            int code = one_object_set_val_array(_ptr, key, value.Ptr);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_set_val_array(_ptr, key8, value.Ptr);
+            }
 
             OneErrorValidator.Validate(code);
         }
 
         public void SetObject(string key, OneObject value)
         {
-            int code = one_object_set_val_object(_ptr, key, value._ptr);
+            int code;
+
+            using (var key8 = new Utf8CharArray(key))
+            {
+                code = one_object_set_val_object(_ptr, key8, value._ptr);
+            }
 
             OneErrorValidator.Validate(code);
         }

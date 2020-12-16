@@ -7,8 +7,8 @@ namespace i3D
     {
         private const string DllName = "one_arcus.dll";
 
-        [DllImport(DllName, CharSet = CharSet.Auto)]
-        private static extern int one_server_create(Action<int, string> logFn, out IntPtr server);
+        [DllImport(DllName)]
+        private static extern int one_server_create(Action<int, IntPtr> logFn, out IntPtr server);
 
         [DllImport(DllName)]
         private static extern void one_server_destroy(IntPtr server);
@@ -25,10 +25,10 @@ namespace i3D
         [DllImport(DllName)]
         private static extern int one_server_status(IntPtr server, out IntPtr status);
 
-        [DllImport(DllName, CharSet = CharSet.Auto)]
+        [DllImport(DllName)]
         private static extern int one_server_set_live_state(
-            IntPtr server, int players, int max_players, string name,
-            string map, string mode, string version, IntPtr additional_data);
+            IntPtr server, int players, int max_players, IntPtr name,
+            IntPtr map, IntPtr mode, IntPtr version, IntPtr additional_data);
 
         [DllImport(DllName)]
         private static extern int one_server_set_application_instance_status(

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace i3D
 {
@@ -146,8 +145,8 @@ namespace i3D
         public string GetString(string key)
         {
             int size = GetStringSize(key);
-
-            var result8 = new Utf8CharArray("");
+            
+            var result8 = new Utf8CharArray(size);
             int code;
 
             using (var key8 = new Utf8CharArray(key))
@@ -166,32 +165,32 @@ namespace i3D
 
         public OneArray GetArray(string key)
         {
-            IntPtr ptr;
+            var array = new OneArray();
             int code;
 
             using (var key8 = new Utf8CharArray(key))
             {
-                code = one_object_val_array(_ptr, key8, out ptr);
+                code = one_object_val_array(_ptr, key8, array.Ptr);
             }
 
             OneErrorValidator.Validate(code);
 
-            return new OneArray(ptr);
+            return array;
         }
 
         public OneObject GetObject(string key)
         {
-            IntPtr ptr;
+            var obj = new OneObject();
             int code;
 
             using (var key8 = new Utf8CharArray(key))
             {
-                code = one_object_val_object(_ptr, key8, out ptr);
+                code = one_object_val_object(_ptr, key8, obj.Ptr);
             }
 
             OneErrorValidator.Validate(code);
 
-            return new OneObject(ptr);
+            return obj;
         }
 
         public void SetBool(string key, bool value)

@@ -13,6 +13,12 @@ namespace i3D
 
         public IntPtr Ptr { get { return _ptr; } }
 
+        public Utf8CharArray(int length)
+        {
+            _ptr = Marshal.AllocHGlobal(length + 1);
+            Marshal.WriteByte(_ptr, length, 0);
+        }
+
         public Utf8CharArray(string str)
         {
             _str = str;

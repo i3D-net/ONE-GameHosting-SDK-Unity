@@ -240,7 +240,7 @@ namespace i3D
         /// <param name="val">A non-null pointer to set the value on.</param>
         /// <returns>Error code.</returns>
         [DllImport(DllName)]
-        private static extern int one_array_val_array(IntPtr array, uint pos, out IntPtr val);
+        private static extern int one_array_val_array(IntPtr array, uint pos, IntPtr val);
 
         /// <summary>
         /// Writes the key value to the given character buffer.
@@ -250,7 +250,7 @@ namespace i3D
         /// <param name="val">A non-null pointer to set the value on.</param>
         /// <returns>Error code.</returns>
         [DllImport(DllName)]
-        private static extern int one_array_val_object(IntPtr array, uint pos, out IntPtr val);
+        private static extern int one_array_val_object(IntPtr array, uint pos, IntPtr val);
 
         /// <summary>
         /// Allows setting a <see cref="bool"/> sub key/value pair on the array.

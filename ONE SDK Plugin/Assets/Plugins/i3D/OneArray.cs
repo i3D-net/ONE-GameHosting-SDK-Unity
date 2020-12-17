@@ -220,7 +220,7 @@ namespace i3D
         {
             int size = GetStringSize(position);
 
-            var result8 = new Utf8CharArray("");
+            var result8 = new Utf8CharArray(size);
 
             int code = one_array_val_string(_ptr, position, result8, size);
             OneErrorValidator.Validate(code);
@@ -234,22 +234,22 @@ namespace i3D
 
         public OneArray GetArray(uint position)
         {
-            IntPtr ptr;
-            int code = one_array_val_array(_ptr, position, out ptr);
+            var array = new OneArray();
+            int code = one_array_val_array(_ptr, position, array.Ptr);
 
             OneErrorValidator.Validate(code);
 
-            return new OneArray(ptr);
+            return array;
         }
 
         public OneObject GetObject(uint position)
         {
-            IntPtr ptr;
-            int code = one_array_val_object(_ptr, position, out ptr);
+            var obj = new OneObject();
+            int code = one_array_val_object(_ptr, position, obj.Ptr);
 
             OneErrorValidator.Validate(code);
 
-            return new OneObject(ptr);
+            return obj;
         }
 
         public void SetBool(uint position, bool value)

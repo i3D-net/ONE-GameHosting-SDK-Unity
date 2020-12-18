@@ -191,6 +191,11 @@ namespace i3D
 
         public void Dispose()
         {
+            lock (Servers)
+            {
+                Servers.Remove(_ptr);
+            }
+
             one_server_destroy(_ptr);
         }
     }

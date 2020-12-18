@@ -5,20 +5,31 @@ using System.Text;
 
 namespace i3D
 {
-    public class Utf8ByteArray : IDisposable
+    /// <summary>
+    /// Helper class to support marshalling strings in UTF-8 encoding.
+    /// </summary>
+    internal class Utf8ByteArray : IDisposable
     {
         private string _str;
         private IntPtr _ptr;
         private readonly bool _shouldFreeMemory;
 
-        public IntPtr Ptr { get { return _ptr; } }
-
-        public Utf8ByteArray(int length)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Utf8ByteArray"/> class with pre-allocated memory.
+        /// </summary>
+        /// <param name="bytes">Number of bytes to pre-allocate.</param>
+        public Utf8ByteArray(int bytes)
         {
-            _ptr = Marshal.AllocHGlobal(length + 1);
-            Marshal.WriteByte(_ptr, length, 0);
+            _shouldFreeMemory = true;
+
+            _ptr = Marshal.AllocHGlobal(bytes + 1);
+            Marshal.WriteByte(_ptr, bytes, 0);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Utf8ByteArray"/> class to the specified string.
+        /// </summary>
+        /// <param name="str">The string to be marshalled.</param>
         public Utf8ByteArray(string str)
         {
             _str = str;
@@ -30,6 +41,10 @@ namespace i3D
             Marshal.WriteByte(_ptr, bytes.Length, 0);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Utf8ByteArray"/> class to the specified pointer.
+        /// </summary>
+        /// <param name="ptr">The pointer to read bytes from.</param>
         public Utf8ByteArray(IntPtr ptr)
         {
             _ptr = ptr;
@@ -38,6 +53,9 @@ namespace i3D
             ReadPtr();
         }
 
+        /// <summary>
+        /// Reads bytes between the pointer and the terminating zero-byte.
+        /// </summary>
         public void ReadPtr()
         {
             if (_ptr == IntPtr.Zero)
@@ -62,6 +80,11 @@ namespace i3D
             _str = Encoding.UTF8.GetString(data.ToArray());
         }
 
+        /// <summary>
+        /// Releases the memory used by the array.
+        /// NOTE: The memory will not be released if it wasn't allocated in scope of this class.
+        /// That is, the pointer was passed to the constructor.
+        /// </summary>
         public void Dispose()
         {
             if (_shouldFreeMemory && _ptr != IntPtr.Zero)
@@ -71,11 +94,17 @@ namespace i3D
             }
         }
 
-        public static implicit operator IntPtr(Utf8ByteArray ca)
+        /// <summary>
+        /// Defines an implicit conversion of a given <see cref="Utf8ByteArray"/> to a pointer.
+        /// </summary>
+        public static implicit operator IntPtr(Utf8ByteArray array)
         {
-            return ca._ptr;
+            return array._ptr;
         }
 
+        /// <summary>
+        /// Returns the string representation of the array.
+        /// </summary>
         public override string ToString()
         {
             return _str;

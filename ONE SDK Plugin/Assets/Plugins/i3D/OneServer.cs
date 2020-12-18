@@ -97,10 +97,10 @@ namespace i3D
         {
             int code;
 
-            using (var name8 = new Utf8CharArray(name))
-            using (var map8 = new Utf8CharArray(map))
-            using (var mode8 = new Utf8CharArray(mode))
-            using (var version8 = new Utf8CharArray(version))
+            using (var name8 = new Utf8ByteArray(name))
+            using (var map8 = new Utf8ByteArray(map))
+            using (var mode8 = new Utf8ByteArray(mode))
+            using (var version8 = new Utf8ByteArray(version))
             {
                 code = one_server_set_live_state(_ptr, players, maxPlayers, name8, map8, mode8, version8,
                                                  additionalData != null ? additionalData.Ptr : IntPtr.Zero);
@@ -118,7 +118,7 @@ namespace i3D
 
         private static void LogCallback(int level, IntPtr log)
         {
-            Debug.LogFormat("{0}: {1}", level, new Utf8CharArray(log));
+            Debug.LogFormat("{0}: {1}", level, new Utf8ByteArray(log));
             /// Debug.LogFormat("{0}: {1}", a, level);
             // Debug.LogFormat("{0}: {1}", a, log);
             // Debug.LogFormat("{0}: {1}", a, _logCallback);

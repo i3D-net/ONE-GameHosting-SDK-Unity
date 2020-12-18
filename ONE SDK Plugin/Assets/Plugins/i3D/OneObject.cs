@@ -27,7 +27,7 @@ namespace i3D
             bool result;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_is_val_bool(_ptr, key8, out result);
             }
@@ -42,7 +42,7 @@ namespace i3D
             bool result;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_is_val_int(_ptr, key8, out result);
             }
@@ -57,7 +57,7 @@ namespace i3D
             bool result;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_is_val_string(_ptr, key8, out result);
             }
@@ -72,7 +72,7 @@ namespace i3D
             bool result;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_is_val_array(_ptr, key8, out result);
             }
@@ -87,7 +87,7 @@ namespace i3D
             bool result;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_is_val_object(_ptr, key8, out result);
             }
@@ -102,7 +102,7 @@ namespace i3D
             bool value;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_val_bool(_ptr, key8, out value);
             }
@@ -117,7 +117,7 @@ namespace i3D
             int value;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_val_int(_ptr, key8, out value);
             }
@@ -132,7 +132,7 @@ namespace i3D
             int size;
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_val_string_size(_ptr, key8, out size);
             }
@@ -146,10 +146,10 @@ namespace i3D
         {
             int size = GetStringSize(key);
             
-            var result8 = new Utf8CharArray(size);
+            var result8 = new Utf8ByteArray(size);
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_val_string(_ptr, key8, result8, size);
             }
@@ -168,7 +168,7 @@ namespace i3D
             var array = new OneArray();
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_val_array(_ptr, key8, array.Ptr);
             }
@@ -183,7 +183,7 @@ namespace i3D
             var obj = new OneObject();
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_val_object(_ptr, key8, obj.Ptr);
             }
@@ -197,7 +197,7 @@ namespace i3D
         {
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_set_val_bool(_ptr, key8, value);
             }
@@ -209,7 +209,7 @@ namespace i3D
         {
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_set_val_int(_ptr, key8, value);
             }
@@ -221,8 +221,8 @@ namespace i3D
         {
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
-            using (var value8 = new Utf8CharArray(value))
+            using (var key8 = new Utf8ByteArray(key))
+            using (var value8 = new Utf8ByteArray(value))
             {
                 code = one_object_set_val_string(_ptr, key8, value8);
             }
@@ -234,7 +234,7 @@ namespace i3D
         {
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_set_val_array(_ptr, key8, value.Ptr);
             }
@@ -246,7 +246,7 @@ namespace i3D
         {
             int code;
 
-            using (var key8 = new Utf8CharArray(key))
+            using (var key8 = new Utf8ByteArray(key))
             {
                 code = one_object_set_val_object(_ptr, key8, value._ptr);
             }

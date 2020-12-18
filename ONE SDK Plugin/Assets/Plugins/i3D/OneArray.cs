@@ -107,7 +107,7 @@ namespace i3D
         {
             int code;
 
-            using (var value8 = new Utf8CharArray(value))
+            using (var value8 = new Utf8ByteArray(value))
             {
                 code = one_array_push_back_string(_ptr, value8);
             }
@@ -220,7 +220,7 @@ namespace i3D
         {
             int size = GetStringSize(position);
 
-            var result8 = new Utf8CharArray(size);
+            var result8 = new Utf8ByteArray(size);
 
             int code = one_array_val_string(_ptr, position, result8, size);
             OneErrorValidator.Validate(code);
@@ -270,7 +270,7 @@ namespace i3D
         {
             int code;
 
-            using (var value8 = new Utf8CharArray(value))
+            using (var value8 = new Utf8ByteArray(value))
             {
                 code = one_array_set_val_string(_ptr, position, value8);
             }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace i3D
 {
-    public class Utf8CharArray : IDisposable
+    public class Utf8ByteArray : IDisposable
     {
         private string _str;
         private IntPtr _ptr;
@@ -13,13 +13,13 @@ namespace i3D
 
         public IntPtr Ptr { get { return _ptr; } }
 
-        public Utf8CharArray(int length)
+        public Utf8ByteArray(int length)
         {
             _ptr = Marshal.AllocHGlobal(length + 1);
             Marshal.WriteByte(_ptr, length, 0);
         }
 
-        public Utf8CharArray(string str)
+        public Utf8ByteArray(string str)
         {
             _str = str;
             _shouldFreeMemory = true;
@@ -30,7 +30,7 @@ namespace i3D
             Marshal.WriteByte(_ptr, bytes.Length, 0);
         }
 
-        public Utf8CharArray(IntPtr ptr)
+        public Utf8ByteArray(IntPtr ptr)
         {
             _ptr = ptr;
             _shouldFreeMemory = false;
@@ -71,7 +71,7 @@ namespace i3D
             }
         }
 
-        public static implicit operator IntPtr(Utf8CharArray ca)
+        public static implicit operator IntPtr(Utf8ByteArray ca)
         {
             return ca._ptr;
         }

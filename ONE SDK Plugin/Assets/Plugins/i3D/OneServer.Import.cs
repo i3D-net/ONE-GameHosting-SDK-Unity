@@ -5,7 +5,7 @@ namespace i3D
 {
     public partial class OneServer
     {
-        private const string DllName = "one_arcus.dll";
+        private const string DllName = "one_arcus";
 
         [DllImport(DllName)]
         private static extern int one_server_create(Action<int, IntPtr> logFn, out IntPtr server);

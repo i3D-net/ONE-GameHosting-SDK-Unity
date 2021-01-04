@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-	private OneServer _server;
+	private OneServerWrapper _server;
 
 	IEnumerator Start ()
 	{
@@ -157,7 +157,7 @@ public class Test : MonoBehaviour
 
 		Debug.Log("<b>=== Creating the server ===</b>");
 
-		_server = new OneServer(null,//(l, s) => Debug.LogFormat("{0}: {1}", l.ToString(), s),
+		_server = new OneServerWrapper(null,//(l, s) => Debug.LogFormat("{0}: {1}", l.ToString(), s),
 		                        19001);
 		
 		_server.AllocatedReceived += ServerOnAllocatedReceived;

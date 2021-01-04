@@ -15,7 +15,13 @@ namespace i3D
         /// The minimum log level.
         /// </summary>
         [SerializeField, Tooltip("The minimum log level")]
-        private OneLogLevel minimumLogLevel;
+        private OneLogLevel minimumLogLevel = OneLogLevel.OneLogLevelInfo;
+
+        /// <summary>
+        /// Whether the logs should be displayed.
+        /// </summary>
+        [SerializeField, Tooltip("Whether the logs should be displayed")]
+        private bool enableLogs = true;
 
         /// <summary>
         /// Occurs when the server receives a Soft Stop packet.
@@ -129,6 +135,9 @@ namespace i3D
 
         private void WrapperOnLogReceived(OneLogLevel logLevel, string log)
         {
+            if (!enableLogs)
+                return;
+
             if ((int) logLevel >= (int) minimumLogLevel)
                 Debug.LogFormat("ONE Server [{0}]: {1}", LogLevelToString(logLevel), log);
         }

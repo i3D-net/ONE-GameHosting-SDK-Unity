@@ -82,9 +82,12 @@ namespace i3D
         {
             _logCallback = logCallback;
 
-            int code = one_server_create(LogCallback, out _ptr);
+            int code = one_server_create(port, out _ptr);
             OneErrorValidator.Validate(code);
-            
+
+            code = one_server_set_logger(_ptr, LogCallback, _ptr);
+            OneErrorValidator.Validate(code);
+
             lock (Servers)
             {
                 Servers.Add(_ptr, this);
@@ -104,19 +107,6 @@ namespace i3D
             
             code = one_server_set_application_instance_information_callback(
                 _ptr, ApplicationInstanceInformationCallback, _ptr);
-            OneErrorValidator.Validate(code);
-
-            code = one_server_listen(_ptr, port);
-            OneErrorValidator.Validate(code);
-        }
-
-        /// <summary>
-        /// Closes the listen connection, if any and resets the server to creation state.
-        /// </summary>
-        public void Shutdown()
-        {
-            int code = one_server_shutdown(_ptr);
-
             OneErrorValidator.Validate(code);
         }
 
@@ -178,22 +168,22 @@ namespace i3D
             OneErrorValidator.Validate(code);
         }
 
-        private static void LogCallback(int level, IntPtr log)
+        private static void LogCallback(IntPtr data, int level, IntPtr log)
         {
-            Debug.LogFormat("{0}: {1}", level, new Utf8ByteArray(log));
-            /// Debug.LogFormat("{0}: {1}", a, level);
-            // Debug.LogFormat("{0}: {1}", a, log);
-            // Debug.LogFormat("{0}: {1}", a, _logCallback);
-            // ++a;
-            // if (_logCallback == null)
-            //     return;
-            //
-            // if (!Enum.IsDefined(typeof(OneLogLevel), level))
-            //     throw new OneInvalidLogLevelException(level);
-            //
-            // var logLevel = (OneLogLevel) level;
-            //
-            // _logCallback(logLevel, log);
+            if (!Servers.ContainsKey(data))
+                throw new InvalidOperationException("Cannot find OneServer instance");
+
+            var server = Servers[data];
+
+            if (server._logCallback == null)
+                return;
+
+            if (!Enum.IsDefined(typeof(OneLogLevel), level))
+                throw new OneInvalidLogLevelException(level);
+
+            var logLevel = (OneLogLevel) level;
+
+            server._logCallback(logLevel, new Utf8ByteArray(log).ToString());
         }
 
         private static void SoftStopCallback(IntPtr data, int timeout)
@@ -256,12 +246,12 @@ namespace i3D
         /// </summary>
         public void Dispose()
         {
+            one_server_destroy(_ptr);
+
             lock (Servers)
             {
                 Servers.Remove(_ptr);
             }
-
-            one_server_destroy(_ptr);
         }
     }
 }

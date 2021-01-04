@@ -8,16 +8,13 @@ namespace i3D
         private const string DllName = "one_arcus";
 
         [DllImport(DllName)]
-        private static extern int one_server_create(Action<int, IntPtr> logFn, out IntPtr server);
+        private static extern int one_server_create(ushort port, out IntPtr server);
+
+        [DllImport(DllName)]
+        private static extern int one_server_set_logger(IntPtr server, Action<IntPtr, int, IntPtr> logger, IntPtr userdata);
 
         [DllImport(DllName)]
         private static extern void one_server_destroy(IntPtr server);
-
-        [DllImport(DllName)]
-        private static extern int one_server_shutdown(IntPtr server);
-
-        [DllImport(DllName)]
-        private static extern int one_server_listen(IntPtr server, ushort port);
 
         [DllImport(DllName)]
         private static extern int one_server_update(IntPtr server);

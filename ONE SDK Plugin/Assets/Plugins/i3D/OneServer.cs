@@ -1,17 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using i3D.Exceptions;
 using UnityEngine;
 
 namespace i3D
 {
-    /// <summary>
-    /// The C# wrapper of the Server which is the main object of the C API. A single server should be created
-    /// per "game server". The server needs to be updated often to send and receive messages from an Arcus Client.
-    /// </summary>
-    public partial class OneServer : IDisposable
+    public class OneServer : MonoBehaviour
     {
-        private static readonly Dictionary<IntPtr, OneServer> Servers = new Dictionary<IntPtr, OneServer>();
+        /// <summary>
+        /// The port to bind to.
+        /// </summary>
+        [SerializeField, Tooltip("The port to bind to")]
+        private ushort port = 19001;
+
+        /// <summary>
+        /// The minimum log level.
+        /// </summary>
+        [SerializeField, Tooltip("The minimum log level")]
+        private OneLogLevel minimumLogLevel;
 
         /// <summary>
         /// Occurs when the server receives a Soft Stop packet.
@@ -38,98 +42,50 @@ namespace i3D
         /// </summary>
         public event Action<OneObject> ApplicationInstanceInformationReceived;
 
-        private readonly IntPtr _ptr;
-        private readonly Action<OneLogLevel, string> _logCallback;
-
         /// <summary>
         /// Returns the status of the server.
         /// </summary>
-        /// <exception cref="OneInvalidServerStatusException">Thrown if the wrapper cannot cast the numeric value
-        /// received from the C API to the status enum. </exception>
         public OneServerStatus Status
         {
-            get
+            get { return _wrapper.Status; }
+        }
+
+        private OneServerWrapper _wrapper;
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void Update()
+        {
+            if (_wrapper == null)
+                throw new InvalidOperationException("Server wrapper is null");
+
+            _wrapper.Update();
+        }
+
+        private void OnEnable()
+        {
+            if (_wrapper != null)
+                throw new InvalidOperationException("Server wrapper should be null");
+
+            _wrapper = new OneServerWrapper(WrapperOnLogReceived, port);
+
+            _wrapper.AllocatedReceived += WrapperOnAllocatedReceived;
+            _wrapper.MetadataReceived += WrapperOnMetadataReceived;
+            _wrapper.HostInformationReceived += WrapperOnHostInformationReceived;
+            _wrapper.SoftStopReceived += WrapperOnSoftStopReceived;
+            _wrapper.ApplicationInstanceInformationReceived += WrapperOnApplicationInstanceInformationReceived;
+        }
+
+        private void OnDisable()
+        {
+            if (_wrapper != null)
             {
-                IntPtr statusPtr;
-
-                int code = one_server_status(_ptr, out statusPtr);
-
-                OneErrorValidator.Validate(code);
-
-                int status = statusPtr.ToInt32();
-                
-                if (!Enum.IsDefined(typeof(OneServerStatus), status))
-                    throw new OneInvalidServerStatusException(status);
-
-                return (OneServerStatus) status;
+                _wrapper.Dispose();
+                _wrapper = null;
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OneServer"/> class and starts listening to the specified port.
-        /// </summary>
-        /// <param name="port">The port to listen to.</param>
-        public OneServer(ushort port) : this(null, port)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OneServer"/> class and starts listening to the specified port.
-        /// </summary>
-        /// <param name="logCallback">The logging callback.</param>
-        /// <param name="port">The port to listen to.</param>
-        public OneServer(Action<OneLogLevel, string> logCallback, ushort port)
-        {
-            _logCallback = logCallback;
-
-            int code = one_server_create(LogCallback, out _ptr);
-            OneErrorValidator.Validate(code);
-            
-            lock (Servers)
-            {
-                Servers.Add(_ptr, this);
-            }
-
-            code = one_server_set_soft_stop_callback(_ptr, SoftStopCallback, _ptr);
-            OneErrorValidator.Validate(code);
-
-            code = one_server_set_allocated_callback(_ptr, AllocatedCallback, _ptr);
-            OneErrorValidator.Validate(code);
-
-            code = one_server_set_metadata_callback(_ptr, MetadataCallback, _ptr);
-            OneErrorValidator.Validate(code);
-            
-            code = one_server_set_host_information_callback(_ptr, HostInformationCallback, _ptr);
-            OneErrorValidator.Validate(code);
-            
-            code = one_server_set_application_instance_information_callback(
-                _ptr, ApplicationInstanceInformationCallback, _ptr);
-            OneErrorValidator.Validate(code);
-
-            code = one_server_listen(_ptr, port);
-            OneErrorValidator.Validate(code);
-        }
-
-        /// <summary>
-        /// Closes the listen connection, if any and resets the server to creation state.
-        /// </summary>
-        public void Shutdown()
-        {
-            int code = one_server_shutdown(_ptr);
-
-            OneErrorValidator.Validate(code);
-        }
-
-        /// <summary>
-        /// Update the server. This must be called frequently (e.g. each frame) to process incoming and outgoing
-        /// communications. Incoming messages trigger their respective incoming callbacks during the call to update.
-        /// If TODO (a?) the callback for a message is not set then the message is ignored.
-        /// </summary>
-        public void Update()
-        {
-            int code = one_server_update(_ptr);
-
-            OneErrorValidator.Validate(code);
         }
 
         /// <summary>
@@ -139,31 +95,23 @@ namespace i3D
         /// </summary>
         /// <param name="players">Current player count.</param>
         /// <param name="maxPlayers">Max player count allowed in current match.</param>
-        /// <param name="name">Friendly server name.</param>
+        /// <param name="serverName">Friendly server name.</param>
         /// <param name="map">Actively hosted map.</param>
-        /// <param name="mode">Actively hosted game mode.</param>
+        /// <param name="gameMode">Actively hosted game mode.</param>
         /// <param name="version">The version of the game software.</param>
         /// <param name="additionalData">Any key/value pairs set on this object will be added.</param>
         public void SetLiveState(int players,
                                  int maxPlayers,
-                                 string name,
+                                 string serverName,
                                  string map,
-                                 string mode,
+                                 string gameMode,
                                  string version,
                                  OneObject additionalData)
         {
-            int code;
+            if (_wrapper == null)
+                throw new InvalidOperationException("SDK wrapper is null. This component should be enabled in order to make this call.");
 
-            using (var name8 = new Utf8ByteArray(name))
-            using (var map8 = new Utf8ByteArray(map))
-            using (var mode8 = new Utf8ByteArray(mode))
-            using (var version8 = new Utf8ByteArray(version))
-            {
-                code = one_server_set_live_state(_ptr, players, maxPlayers, name8, map8, mode8, version8,
-                                                 additionalData != null ? additionalData.Ptr : IntPtr.Zero);
-            }
-
-            OneErrorValidator.Validate(code);
+            _wrapper.SetLiveState(players, maxPlayers, serverName, map, gameMode, version, additionalData);
         }
 
         /// <summary>
@@ -173,95 +121,56 @@ namespace i3D
         /// <param name="status">The current status of the game server application instance.</param>
         public void SetApplicationInstanceStatus(OneApplicationInstanceStatus status)
         {
-            int code = one_server_set_application_instance_status(_ptr, (int) status);
+            if (_wrapper == null)
+                throw new InvalidOperationException("SDK wrapper is null. This component should be enabled in order to make this call.");
 
-            OneErrorValidator.Validate(code);
+            _wrapper.SetApplicationInstanceStatus(status);
         }
 
-        private static void LogCallback(int level, IntPtr log)
+        private void WrapperOnLogReceived(OneLogLevel logLevel, string log)
         {
-            Debug.LogFormat("{0}: {1}", level, new Utf8ByteArray(log));
-            /// Debug.LogFormat("{0}: {1}", a, level);
-            // Debug.LogFormat("{0}: {1}", a, log);
-            // Debug.LogFormat("{0}: {1}", a, _logCallback);
-            // ++a;
-            // if (_logCallback == null)
-            //     return;
-            //
-            // if (!Enum.IsDefined(typeof(OneLogLevel), level))
-            //     throw new OneInvalidLogLevelException(level);
-            //
-            // var logLevel = (OneLogLevel) level;
-            //
-            // _logCallback(logLevel, log);
+            if ((int) logLevel >= (int) minimumLogLevel)
+                Debug.LogFormat("ONE Server [{0}]: {1}", LogLevelToString(logLevel), log);
         }
 
-        private static void SoftStopCallback(IntPtr data, int timeout)
+        private void WrapperOnAllocatedReceived(OneArray metadata)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
-
-            var server = Servers[data];
-
-            if (server.SoftStopReceived != null)
-                server.SoftStopReceived(timeout);
+            if (AllocatedReceived != null)
+                AllocatedReceived(metadata);
         }
 
-        private static void AllocatedCallback(IntPtr data, IntPtr array)
+        private void WrapperOnMetadataReceived(OneArray metadata)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
-
-            var server = Servers[data];
-
-            if (server.AllocatedReceived != null)
-                server.AllocatedReceived(new OneArray(array));
+            if (MetadataReceived != null)
+                MetadataReceived(metadata);
         }
 
-        private static void MetadataCallback(IntPtr data, IntPtr array)
+        private void WrapperOnHostInformationReceived(OneObject payload)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
-
-            var server = Servers[data];
-
-            if (server.MetadataReceived != null)
-                server.MetadataReceived(new OneArray(array));
+            if (HostInformationReceived != null)
+                HostInformationReceived(payload);
         }
 
-        private static void HostInformationCallback(IntPtr data, IntPtr obj)
+        private void WrapperOnSoftStopReceived(int timeout)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
-
-            var server = Servers[data];
-
-            if (server.HostInformationReceived != null)
-                server.HostInformationReceived(new OneObject(obj));
+            if (SoftStopReceived != null)
+                SoftStopReceived(timeout);
         }
 
-        private static void ApplicationInstanceInformationCallback(IntPtr data, IntPtr obj)
+        private void WrapperOnApplicationInstanceInformationReceived(OneObject payload)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
-
-            var server = Servers[data];
-
-            if (server.ApplicationInstanceInformationReceived != null)
-                server.ApplicationInstanceInformationReceived(new OneObject(obj));
+            if (ApplicationInstanceInformationReceived != null)
+                ApplicationInstanceInformationReceived(payload);
         }
 
-        /// <summary>
-        /// Releases the memory used by the server.
-        /// </summary>
-        public void Dispose()
+        private static string LogLevelToString(OneLogLevel level)
         {
-            lock (Servers)
+            switch (level)
             {
-                Servers.Remove(_ptr);
+                case OneLogLevel.OneLogLevelInfo: return "Info";
+                case OneLogLevel.OneLogLevelError: return "Error";
+                default: return null;
             }
-
-            one_server_destroy(_ptr);
         }
     }
 }

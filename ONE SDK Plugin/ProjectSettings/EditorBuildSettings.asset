@@ -8,3 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Plugins/i3D/Example/OneIntegrationExample.unity
+    guid: 45054aaebc4fda448a22e1ccbbd2fe32
+  - enabled: 1
+    path: Assets/Plugins/i3D/Example/OneIntegrationExample2.unity
+    guid: aa85b38c6184d9c469f39e5b5a999b8c

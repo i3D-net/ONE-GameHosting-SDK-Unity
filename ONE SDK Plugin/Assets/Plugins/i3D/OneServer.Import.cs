@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace i3D
 {
-    public partial class OneServer
+    public partial class OneServerWrapper
     {
         private const string DllName = "one_arcus";
 

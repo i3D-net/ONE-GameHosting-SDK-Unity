@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace i3D
 {
+    /// <summary>
+    /// The main object of the ONE SDK. A single server should be created per game server.
+    /// The server needs to be updated often to send and receive messages from an Arcus Client.
+    /// </summary>
     public class OneServer : MonoBehaviour
     {
         /// <summary>

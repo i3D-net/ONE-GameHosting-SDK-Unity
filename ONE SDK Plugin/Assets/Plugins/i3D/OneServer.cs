@@ -57,18 +57,36 @@ namespace i3D
         /// </summary>
         public OneServerStatus Status
         {
-            get { return _wrapper.Status; }
+            get
+            {
+                if (!IsHeadless())
+                    return OneServerStatus.OneServerStatusUninitialized;
+
+                return _wrapper.Status;
+            }
         }
 
         private OneServerWrapper _wrapper;
 
         private void Awake()
         {
+            if (!IsHeadless())
+            {
+                enabled = false;
+                return;
+            }
+
             DontDestroyOnLoad(gameObject);
         }
 
         private void Update()
         {
+            if (!IsHeadless())
+            {
+                enabled = false;
+                return;
+            }
+
             if (_wrapper == null)
                 throw new InvalidOperationException("Server wrapper is null");
 
@@ -77,6 +95,12 @@ namespace i3D
 
         private void OnEnable()
         {
+            if (!IsHeadless())
+            {
+                enabled = false;
+                return;
+            }
+
             if (_wrapper != null)
                 throw new InvalidOperationException("Server wrapper should be null");
 
@@ -91,6 +115,9 @@ namespace i3D
 
         private void OnDisable()
         {
+            if (!IsHeadless())
+                return;
+
             if (_wrapper != null)
             {
                 _wrapper.Dispose();
@@ -118,6 +145,9 @@ namespace i3D
                                  string version,
                                  OneObject additionalData)
         {
+            if (!IsHeadless())
+                return;
+
             if (_wrapper == null)
                 throw new InvalidOperationException("SDK wrapper is null. This component should be enabled in order to make this call.");
 
@@ -131,6 +161,9 @@ namespace i3D
         /// <param name="status">The current status of the game server application instance.</param>
         public void SetApplicationInstanceStatus(OneApplicationInstanceStatus status)
         {
+            if (!IsHeadless())
+                return;
+
             if (_wrapper == null)
                 throw new InvalidOperationException("SDK wrapper is null. This component should be enabled in order to make this call.");
 
@@ -184,6 +217,15 @@ namespace i3D
                 case OneLogLevel.OneLogLevelError: return "Error";
                 default: return null;
             }
+        }
+
+        private static bool IsHeadless()
+        {
+#if UNITY_EDITOR
+            return true;
+#else
+            return SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null;
+#endif
         }
     }
 }

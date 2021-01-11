@@ -142,6 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   port: 19001
   minimumLogLevel: 0
+  enableLogs: 1
 --- !u!4 &466192307
 Transform:
   m_ObjectHideFlags: 0
@@ -328,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b28250f6b854f41b3aeff4df1b1542, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  server: {fileID: 466192306}
 --- !u!4 &1928697766
 Transform:
   m_ObjectHideFlags: 0

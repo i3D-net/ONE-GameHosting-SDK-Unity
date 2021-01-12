@@ -67,6 +67,7 @@ namespace i3D
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OneServerWrapper"/> class and starts listening to the specified port.
+        /// Should be disposed.
         /// </summary>
         /// <param name="port">The port to listen to.</param>
         public OneServerWrapper(ushort port) : this(null, port)
@@ -75,6 +76,7 @@ namespace i3D
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OneServerWrapper"/> class and starts listening to the specified port.
+        /// Should be disposed.
         /// </summary>
         /// <param name="logCallback">The logging callback.</param>
         /// <param name="port">The port to listen to.</param>

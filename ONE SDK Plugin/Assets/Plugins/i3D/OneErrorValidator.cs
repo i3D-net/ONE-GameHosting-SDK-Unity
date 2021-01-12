@@ -3,8 +3,27 @@ using i3D.Exceptions;
 
 namespace i3D
 {
+    /// <summary>
+    /// Helper class for validation of the error codes returned by the ONE SDK.
+    /// For internal use ONLY. 
+    /// </summary>
     internal static class OneErrorValidator
     {
+        /// <summary>
+        /// Validates the error code and throws an exception if needed.
+        /// </summary>
+        /// <param name="errorCode">The error code.</param>
+        /// <exception cref="OneInvalidErrorCodeException"/>
+        /// <exception cref="OneArrayException"/>
+        /// <exception cref="OneClientException"/>
+        /// <exception cref="OneCodecException"/>
+        /// <exception cref="OneConnectionException"/>
+        /// <exception cref="OneMessageException"/>
+        /// <exception cref="OneObjectException"/>
+        /// <exception cref="OnePayloadException"/>
+        /// <exception cref="OneServerException"/>
+        /// <exception cref="OneSocketException"/>
+        /// <exception cref="OneValidationException"/>
         public static void Validate(int errorCode)
         {
             if (!Enum.IsDefined(typeof(OneError), errorCode))

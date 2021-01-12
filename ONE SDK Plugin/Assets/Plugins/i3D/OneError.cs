@@ -1,5 +1,8 @@
 ﻿namespace i3D
 {
+    /// <summary>
+    /// Enumeration of all the errors that can be returned by the SDK.
+    /// </summary>
     public enum OneError
     {
         None = 0,

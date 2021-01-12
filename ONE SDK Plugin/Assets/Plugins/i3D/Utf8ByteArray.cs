@@ -16,6 +16,7 @@ namespace i3D
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Utf8ByteArray"/> class with pre-allocated memory.
+        /// Should be disposed.
         /// </summary>
         /// <param name="bytes">Number of bytes to pre-allocate.</param>
         public Utf8ByteArray(int bytes)
@@ -28,6 +29,7 @@ namespace i3D
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Utf8ByteArray"/> class to the specified string.
+        /// Should be disposed.
         /// </summary>
         /// <param name="str">The string to be marshalled.</param>
         public Utf8ByteArray(string str)
@@ -43,6 +45,7 @@ namespace i3D
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Utf8ByteArray"/> class to the specified pointer.
+        /// Should NOT be disposed.
         /// </summary>
         /// <param name="ptr">The pointer to read bytes from.</param>
         public Utf8ByteArray(IntPtr ptr)

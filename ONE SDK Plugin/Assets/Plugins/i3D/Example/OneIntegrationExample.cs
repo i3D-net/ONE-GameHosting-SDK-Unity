@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -12,10 +13,77 @@ namespace i3D.Example
         [SerializeField]
         private OneServer server;
 
+        /// <summary>
+        /// Holds the server status from the previous frame. For tracking the status change.
+        /// </summary>
+        private OneServerStatus _lastStatus;
+
+        private void Awake()
+        {
+            ushort port = GetCommandLinePort();
+
+            // Set the port passed from the command line.
+            if (port != 0)
+            {
+                Debug.LogFormat("Setting port to {0}", port);
+                server.SetPort(port);
+            }
+
+            // Start the server.
+            server.Run();
+        }
+
         private void Start()
         {
             // Start simulating server behavior.
             StartCoroutine(Simulation());
+
+            Debug.LogFormat("Server status: {0}", server.Status);
+            _lastStatus = server.Status;
+        }
+
+        private void Update()
+        {
+            // If the status has changed, log it and save the new one.
+            if (_lastStatus != server.Status)
+            {
+                Debug.LogFormat("Server status: {0}", server.Status);
+                _lastStatus = server.Status;
+            }
+        }
+
+        /// <summary>
+        /// Parse the command line arguments and return the port if it's specified.
+        /// Example of usage:
+        /// > Game.exe -p 19001
+        /// </summary>
+        private static ushort GetCommandLinePort()
+        {
+            // Get command line arguments and find if the port is specified.
+            var args = Environment.GetCommandLineArgs();
+            int portIndex = Array.FindIndex(args, s => string.Equals(s, "-p", StringComparison.Ordinal));
+
+            // Stop if "-p" entry doesn't exist among the arguments.
+            if (portIndex == -1)
+                return 0;
+
+            // Log error and stop if there's nothing specified after "-p".
+            if (portIndex >= args.Length - 1)
+            {
+                Debug.LogError("Cannot find the port value");
+                return 0;
+            }
+
+            ushort port;
+
+            // Parse the port value after "-p". Log error and stop if the value cannot be parsed.
+            if (!ushort.TryParse(args[portIndex + 1], out port))
+            {
+                Debug.LogErrorFormat("Couldn't parse port {0}", args[portIndex + 1]);
+                return 0;
+            }
+
+            return port;
         }
 
         /// <summary>
@@ -49,7 +117,8 @@ namespace i3D.Example
             {
                 yield return new WaitForSeconds(2f);
 
-                SendLiveState(Random.Range(1, 6), 5, "Example", "Example map", "Example mode", "v0.1");
+                // Send random values simulating changing active player count.
+                SendLiveState(UnityEngine.Random.Range(1, 6), 5, "Example", "Example map", "Example mode", "v0.1");
             }
         }
 

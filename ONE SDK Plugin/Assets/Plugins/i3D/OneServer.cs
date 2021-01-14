@@ -16,6 +16,13 @@ namespace i3D
         private ushort port = 19001;
 
         /// <summary>
+        /// Whether the server should automatically run on Awake.
+        /// This flag can be used when the port is static and can be set using the <see cref="port"/> field.
+        /// </summary>
+        [SerializeField, Tooltip("Whether the server should automatically run on Awake")]
+        private bool runOnAwake = false;
+
+        /// <summary>
         /// The minimum log level.
         /// </summary>
         [SerializeField, Tooltip("The minimum log level")]
@@ -67,6 +74,7 @@ namespace i3D
         }
 
         private OneServerWrapper _wrapper;
+        private bool _isRunning;
 
         private void Awake()
         {
@@ -77,6 +85,9 @@ namespace i3D
             }
 
             DontDestroyOnLoad(gameObject);
+
+            if (runOnAwake)
+                Run();
         }
 
         private void Update()
@@ -101,16 +112,10 @@ namespace i3D
                 return;
             }
 
-            if (_wrapper != null)
-                throw new InvalidOperationException("Server wrapper should be null");
+            if (!_isRunning)
+                return;
 
-            _wrapper = new OneServerWrapper(WrapperOnLogReceived, port);
-
-            _wrapper.AllocatedReceived += WrapperOnAllocatedReceived;
-            _wrapper.MetadataReceived += WrapperOnMetadataReceived;
-            _wrapper.HostInformationReceived += WrapperOnHostInformationReceived;
-            _wrapper.SoftStopReceived += WrapperOnSoftStopReceived;
-            _wrapper.ApplicationInstanceInformationReceived += WrapperOnApplicationInstanceInformationReceived;
+            InitWrapper();
         }
 
         private void OnDisable()
@@ -118,10 +123,38 @@ namespace i3D
             if (!IsHeadless())
                 return;
 
+            if (!_isRunning)
+                return;
+
+            ShutdownWrapper();
+        }
+
+        /// <summary>
+        /// Run the server and start listening on the port. Needs to be called once.
+        /// Alternatively, the <see cref="runOnAwake"/> flag can be set to <code>true</code>.
+        /// </summary>
+        public void Run()
+        {
+            if (!_isRunning && enabled)
+                InitWrapper();
+
+            _isRunning = true;
+        }
+
+        /// <summary>
+        /// Set a different port to bind to and listen on for incoming Client connections.
+        /// </summary>
+        public void SetPort(ushort newPort)
+        {
+            if (!IsHeadless())
+                return;
+
+            port = newPort;
+
             if (_wrapper != null)
             {
-                _wrapper.Dispose();
-                _wrapper = null;
+                ShutdownWrapper();
+                InitWrapper();
             }
         }
 
@@ -216,6 +249,29 @@ namespace i3D
                 case OneLogLevel.OneLogLevelInfo: return "Info";
                 case OneLogLevel.OneLogLevelError: return "Error";
                 default: return null;
+            }
+        }
+
+        private void InitWrapper()
+        {
+            if (_wrapper != null)
+                throw new InvalidOperationException("Server wrapper should be null");
+
+            _wrapper = new OneServerWrapper(WrapperOnLogReceived, port);
+
+            _wrapper.AllocatedReceived += WrapperOnAllocatedReceived;
+            _wrapper.MetadataReceived += WrapperOnMetadataReceived;
+            _wrapper.HostInformationReceived += WrapperOnHostInformationReceived;
+            _wrapper.SoftStopReceived += WrapperOnSoftStopReceived;
+            _wrapper.ApplicationInstanceInformationReceived += WrapperOnApplicationInstanceInformationReceived;
+        }
+
+        private void ShutdownWrapper()
+        {
+            if (_wrapper != null)
+            {
+                _wrapper.Dispose();
+                _wrapper = null;
             }
         }
 

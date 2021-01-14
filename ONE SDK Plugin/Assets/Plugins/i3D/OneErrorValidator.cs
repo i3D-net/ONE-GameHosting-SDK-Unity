@@ -54,6 +54,7 @@ namespace i3D
                 case OneError.CodecInvalidHeader:
                 case OneError.CodecTryingToEncodeUnsupportedOpcode:
                     throw new OneCodecException(error);
+                case OneError.ConnectionUninitialized:
                 case OneError.ConnectionHandshakeTimeout:
                 case OneError.ConnectionHealthTimeout:
                 case OneError.ConnectionHelloInvalid:
@@ -114,6 +115,8 @@ namespace i3D
                     throw new OnePayloadException(error);
                 case OneError.ServerAllocationFailed:
                 case OneError.ServerAlreadyInitialized:
+                case OneError.ServerAlreadyListening:
+                case OneError.ServerRetryingListen:
                 case OneError.ServerCallbackIsNullptr:
                 case OneError.ServerConnectionIsNullptr:
                 case OneError.ServerConnectionNotReady:

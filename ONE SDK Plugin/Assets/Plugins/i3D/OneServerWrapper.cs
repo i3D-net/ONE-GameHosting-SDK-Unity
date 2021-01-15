@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using i3D.Exceptions;
-using UnityEngine;
 
 namespace i3D
 {
@@ -40,6 +39,7 @@ namespace i3D
 
         private readonly IntPtr _ptr;
         private readonly Action<OneLogLevel, string> _logCallback;
+        private readonly ushort _port;
 
         /// <summary>
         /// Returns the status of the server.
@@ -66,6 +66,11 @@ namespace i3D
         }
 
         /// <summary>
+        /// The port the server listens on.
+        /// </summary>
+        public ushort Port { get { return _port; } }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="OneServerWrapper"/> class and starts listening to the specified port.
         /// Should be disposed.
         /// </summary>
@@ -83,6 +88,7 @@ namespace i3D
         public OneServerWrapper(Action<OneLogLevel, string> logCallback, ushort port)
         {
             _logCallback = logCallback;
+            _port = port;
 
             int code = one_server_create(port, out _ptr);
             OneErrorValidator.Validate(code);

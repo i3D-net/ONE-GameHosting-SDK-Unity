@@ -255,7 +255,12 @@ namespace i3D
         private void InitWrapper()
         {
             if (_wrapper != null)
-                throw new InvalidOperationException("Server wrapper should be null");
+            {
+                if (_wrapper.Port != port)
+                    ShutdownWrapper();
+                else
+                    return;
+            }
 
             _wrapper = new OneServerWrapper(WrapperOnLogReceived, port);
 

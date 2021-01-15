@@ -6,5 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/LoadScene.unity
+    guid: d83f83045d408d84cbc8491f7deb4b1d
+  - enabled: 1
+    path: Assets/StressTest/StressTest.unity
+    guid: 60d401e98c902d74385c403bd728d489
+  - enabled: 1
     path: Assets/Plugins/i3D/Example/OneIntegrationExample.unity
     guid: 45054aaebc4fda448a22e1ccbbd2fe32

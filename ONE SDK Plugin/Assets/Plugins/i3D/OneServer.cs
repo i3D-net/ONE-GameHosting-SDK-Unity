@@ -26,7 +26,7 @@ namespace i3D
         /// The minimum log level.
         /// </summary>
         [SerializeField, Tooltip("The minimum log level")]
-        private OneLogLevel minimumLogLevel = OneLogLevel.OneLogLevelInfo;
+        private OneLogLevel minimumLogLevel = OneLogLevel.OneLogLevelError;
 
         /// <summary>
         /// Whether the logs should be displayed.

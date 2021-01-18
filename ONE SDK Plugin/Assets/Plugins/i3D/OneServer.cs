@@ -66,7 +66,7 @@ namespace i3D
         {
             get
             {
-                if (!IsHeadless())
+                if (!IsOneEnabled())
                     return OneServerStatus.OneServerStatusUninitialized;
 
                 return _wrapper.Status;
@@ -78,7 +78,7 @@ namespace i3D
 
         private void Awake()
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
             {
                 enabled = false;
                 return;
@@ -92,7 +92,7 @@ namespace i3D
 
         private void Update()
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
             {
                 enabled = false;
                 return;
@@ -106,7 +106,7 @@ namespace i3D
 
         private void OnEnable()
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
             {
                 enabled = false;
                 return;
@@ -120,7 +120,7 @@ namespace i3D
 
         private void OnDisable()
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
                 return;
 
             if (!_isRunning)
@@ -146,7 +146,7 @@ namespace i3D
         /// </summary>
         public void SetPort(ushort newPort)
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
                 return;
 
             port = newPort;
@@ -178,7 +178,7 @@ namespace i3D
                                  string version,
                                  OneObject additionalData)
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
                 return;
 
             if (_wrapper == null)
@@ -194,7 +194,7 @@ namespace i3D
         /// <param name="status">The current status of the game server application instance.</param>
         public void SetApplicationInstanceStatus(OneApplicationInstanceStatus status)
         {
-            if (!IsHeadless())
+            if (!IsOneEnabled())
                 return;
 
             if (_wrapper == null)
@@ -280,7 +280,7 @@ namespace i3D
             }
         }
 
-        private static bool IsHeadless()
+        private static bool IsOneEnabled()
         {
 #if UNITY_EDITOR
             return true;

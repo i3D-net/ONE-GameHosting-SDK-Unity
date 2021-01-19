@@ -209,7 +209,8 @@ namespace i3D
                 return;
 
             if ((int) logLevel >= (int) minimumLogLevel)
-                Debug.LogFormat("ONE Server [{0}]: {1}", LogLevelToString(logLevel), log);
+                Debug.LogFormat("{0:yyyy-MM-ddTHH:mm:ssZ} ONE Server [{1}]: {2}",
+                                DateTime.UtcNow, LogLevelToString(logLevel), log);
         }
 
         private void WrapperOnAllocatedReceived(OneArray metadata)

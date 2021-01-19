@@ -38,7 +38,7 @@ namespace i3D.Example
             // Start simulating server behavior.
             StartCoroutine(Simulation());
 
-            Debug.LogFormat("Server status: {0}", server.Status);
+            LogWithTimestamp(string.Format("Server status: {0}", server.Status));
             _lastStatus = server.Status;
         }
 
@@ -47,7 +47,7 @@ namespace i3D.Example
             // If the status has changed, log it and save the new one.
             if (_lastStatus != server.Status)
             {
-                Debug.LogFormat("Server status: {0}", server.Status);
+                LogWithTimestamp(string.Format("Server status: {0}", server.Status));
                 _lastStatus = server.Status;
             }
         }
@@ -95,18 +95,18 @@ namespace i3D.Example
             yield return new WaitUntil(() => server.Status == OneServerStatus.OneServerStatusReady);
 
             // Simulate the server starting up by sending the OneServerStarting status.
-            Debug.LogFormat("Sending <b>Application Instance Status</b>: {0} ({1})",
-                            OneApplicationInstanceStatus.OneServerStarting,
-                            (int) OneApplicationInstanceStatus.OneServerStarting);
+            LogWithTimestamp(string.Format("Sending <b>Application Instance Status</b>: {0} ({1})",
+                                           OneApplicationInstanceStatus.OneServerStarting,
+                                           (int) OneApplicationInstanceStatus.OneServerStarting));
             server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerStarting);
 
             // Simulate the startup taking 1 second.
             yield return new WaitForSeconds(1f);
 
             // Simulate the server started by sending OneServerOnline status.
-            Debug.LogFormat("Sending <b>Application Instance Status</b>: {0} ({1})",
-                            OneApplicationInstanceStatus.OneServerOnline,
-                            (int) OneApplicationInstanceStatus.OneServerOnline);
+            LogWithTimestamp(string.Format("Sending <b>Application Instance Status</b>: {0} ({1})",
+                                           OneApplicationInstanceStatus.OneServerOnline,
+                                           (int) OneApplicationInstanceStatus.OneServerOnline));
             server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerOnline);
 
             // Send the test live state data to the agent.
@@ -145,8 +145,8 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerSoftStopReceived(int timeout)
         {
-            Debug.LogFormat("Received <b>Soft Stop</b> packet with timeout {0}. Shutting down.", timeout);
-            
+            LogWithTimestamp(string.Format("Received <b>Soft Stop</b> packet with timeout {0}. Shutting down.", timeout));
+
 #if UNITY_EDITOR
             // In the Editor, when a soft stop packet received, stop playing the game.
             EditorApplication.isPlaying = false;
@@ -161,11 +161,11 @@ namespace i3D.Example
         /// </summary>
         private void OnServerAllocatedReceived(OneArray metadata)
         {
-            Debug.LogFormat("Received <b>Allocated</b> packet with metadata:\n{0} : {1}\n{2} : {3}",
-                            metadata.GetObject(0).GetString("key"),
-                            metadata.GetObject(0).GetString("value"),
-                            metadata.GetObject(1).GetString("key"),
-                            metadata.GetObject(1).GetString("value"));
+            LogWithTimestamp(string.Format("Received <b>Allocated</b> packet with metadata:\n{0} : {1}\n{2} : {3}",
+                                           metadata.GetObject(0).GetString("key"),
+                                           metadata.GetObject(0).GetString("value"),
+                                           metadata.GetObject(1).GetString("key"),
+                                           metadata.GetObject(1).GetString("value")));
 
             StartCoroutine(BecomeAllocatedAfter(3));
         }
@@ -175,14 +175,15 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerMetadataReceived(OneArray metadata)
         {
-            Debug.LogFormat("Received <b>Metadata</b> packet:\nkey : \"{0}\", valid : {1}, message_number : {2}\n" +
-                            "Data: {3}, {4}, \"{5}\"",
-                            metadata.GetObject(0).GetString("key"),
-                            metadata.GetObject(0).GetBool("valid"),
-                            metadata.GetObject(0).GetInt("message_number"),
-                            metadata.GetObject(0).GetArray("data").GetBool(0),
-                            metadata.GetObject(0).GetArray("data").GetInt(1),
-                            metadata.GetObject(0).GetArray("data").GetString(2));
+            LogWithTimestamp(string.Format("Received <b>Metadata</b> packet:\n" +
+                                           "key : \"{0}\", valid : {1}, message_number : {2}\n" +
+                                           "Data: {3}, {4}, \"{5}\"",
+                                           metadata.GetObject(0).GetString("key"),
+                                           metadata.GetObject(0).GetBool("valid"),
+                                           metadata.GetObject(0).GetInt("message_number"),
+                                           metadata.GetObject(0).GetArray("data").GetBool(0),
+                                           metadata.GetObject(0).GetArray("data").GetInt(1),
+                                           metadata.GetObject(0).GetArray("data").GetString(2)));
         }
 
         /// <summary>
@@ -190,9 +191,10 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerHostInformationReceived(OneObject payload)
         {
-            Debug.LogFormat("Received <b>Host Information</b> packet with payload:\nid : {0}, serverId : {1}",
-                            payload.GetInt("id"),
-                            payload.GetInt("serverId"));
+            LogWithTimestamp(string.Format("Received <b>Host Information</b> packet with payload:\n" +
+                                           "id : {0}, serverId : {1}",
+                                           payload.GetInt("id"),
+                                           payload.GetInt("serverId")));
         }
 
         /// <summary>
@@ -200,10 +202,10 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerApplicationInstanceInformationReceived(OneObject payload)
         {
-            Debug.LogFormat("Received <b>Application Instance Information</b> packet with payload:\n" +
-                            "fleetId: \"{0}\", hostId: {1}",
-                            payload.GetString("fleetId"),
-                            payload.GetInt("hostId"));
+            LogWithTimestamp(string.Format("Received <b>Application Instance Information</b> packet with payload:\n" +
+                                           "fleetId: \"{0}\", hostId: {1}",
+                                           payload.GetString("fleetId"),
+                                           payload.GetInt("hostId")));
         }
 
         /// <summary>
@@ -211,9 +213,9 @@ namespace i3D.Example
         /// </summary>
         private void SendLiveState(int players, int maxPlayers, string serverName, string map, string gameMode, string version)
         {
-            Debug.LogFormat("Sending <b>Live State</b>: players = {0}, maxPlayers = {1}, " +
-                            "serverName = {2}, map = {3}, gameMode = {4}, version = {5}",
-                            players, maxPlayers, serverName, map, gameMode, version);
+            LogWithTimestamp(string.Format("Sending <b>Live State</b>: players = {0}, maxPlayers = {1}, " +
+                                           "serverName = {2}, map = {3}, gameMode = {4}, version = {5}",
+                                           players, maxPlayers, serverName, map, gameMode, version));
 
             server.SetLiveState(players, maxPlayers, serverName, map, gameMode, version, null);
         }
@@ -228,6 +230,14 @@ namespace i3D.Example
 
             // Simulate the server becoming allocated by a matchmaker by sending OneServerAllocated status.
             server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerAllocated);
+        }
+
+        /// <summary>
+        /// Logs a string prefixed with a UTC timestamp.
+        /// </summary>
+        private static void LogWithTimestamp(string log)
+        {
+            Debug.LogFormat("{0:yyyy-MM-ddTHH:mm:ssZ} {1}", DateTime.UtcNow, log);
         }
     }
 }

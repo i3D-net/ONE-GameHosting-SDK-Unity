@@ -21,7 +21,21 @@ If something doesn’t work, please [file an issue](https://github.com/i3D-net/O
 
 The documentation for the entire ONE Platform can be found [here](https://www.i3d.net/docs/one/).
 
+Supported platforms:
+    - Windows 10 Pro
+    - Ubuntu 18.04
+
 ## <a name="integration-guide"></a> Integration guide ##
+
+### C++ Redistributable ###
+
+Native SDK libraries require C++ Redistributable 2017 to be installed on Windows.
+
+Download the installer and follow its instructions:
+- [x64](https://go.microsoft.com/fwlink/?LinkId=746572)
+- [x86](https://go.microsoft.com/fwlink/?LinkId=746571)
+
+### Integration in Unity ###
 
 1. Download [the Unity package](/ONE-GameHosting-SDK_v0.9.unitypackage).
 2. In Unity Editor, select _Assets > Import Package > Custom Package..._ menu.

@@ -36,6 +36,8 @@ namespace i3D.Example
         private void Start()
         {
             // Start simulating server behavior.
+            // Here all the calls to the SDK are done within a coroutine just to give a clear example in one place.
+            // In a real project, these calls can be done from any suitable place, including Update.
             StartCoroutine(Simulation());
 
             LogWithTimestamp(string.Format("Server status: {0}", server.Status));

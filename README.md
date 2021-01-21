@@ -43,6 +43,7 @@ Download the installer and follow its instructions:
 4. In the opened window, click _Import_.
 5. Add [OneServer](/ONE%20SDK%20Plugin/Assets/Plugins/i3D/OneServer.cs) component to the scene. The component is marked as _DontDestroyOnLoad_, so the object it's attached to will persist on scenes switch.
 6. Refer to [the sample game](/ONE%20SDK%20Plugin/Assets/Plugins/i3D/Example) on how to set up and use the component.
+7. [Test](#how-to-test).
 
 ## SDK native libraries ##
 
@@ -61,3 +62,9 @@ In order to create a new package, the following actions need to be performed:
 4. Click "Assets -> Export Package..." menu item.
 5. Make sure to select only "Plugins / i3D" folder and all its contents. All the other folders, if there are any, should be unselected.
 6. Click "Export..." and select the output path.
+
+## <a name="how-to-test"></a> How to test ##
+
+There are two ways to test a Game Server that is running an Arcus Server:
+- The SDK contains a Fake Agent that can connect and simulate a real deployment. Build and run instructions can be found [here](https://github.com/i3D-net/ONE-GameHosting-SDK/tree/master/one/agent).
+- The Game Server can be uploaded to a live One Development Platform Deployment. See [here](https://www.i3d.net/docs/one/).

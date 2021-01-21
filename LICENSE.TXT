@@ -186,7 +186,3 @@ under the "BSD" license. For details see
 https://github.com/i3D-net/ONE-GameHosting-SDK/tree/master/one/arcus/internal/rapidjson
 and
 https://github.com/i3D-net/ONE-GameHosting-SDK/tree/master/one/arcus/internal/msinttypes.
-
-This product bundles Catch2, which is available under the "Boost Software
-License - Version 1.0" license. For details see
-https://github.com/i3D-net/ONE-GameHosting-SDK/tree/master/tests/catch2.

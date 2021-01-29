@@ -1,28 +1,29 @@
 # Intergation example #
 
 This example shows how to use the ONE SDK in a Unity project: how to create a server and communicate with an Arcus Client.
+
 It consists of:
-- OneIntegrationExample scene (OneIntegrationExample.unity file) and
-- OneIntegrationExample C# MonoBehaviour component (OneIntegrationExample.cs file)
+- OneIntegrationExample scene (OneIntegrationExample.unity file)
+- OneIntegrationExample C# MonoBehaviour Component (OneIntegrationExample.cs file)
 
 ## OneIntegrationExample scene ##
 
-There are two objects on the scene that need attention.
+There are two Game Objects in the scene that need attention.
 
 1. _Server_
 
-    OneServer component is attached to this game object. This is the main object of the SDK. It provides means of communication with an Arcus Client.
+    A OneServer Component is attached to this Game Object. This is the main object of the SDK. It communicates with an Arcus Client.
 
-    The component has the following settings:
+    The Component has the following settings:
     - _Port_ - The port to bind to and listen on for incoming Client connections.
-    - _Minimum Log Level_ - If set to Info, the component logs both info and error messages. If set to Error, only errors are logged.
-    - _Enable Logs_ - Set whether ONE SDK info and error messages should be logged.
+    - _Minimum Log Level_ - If set to Info, the Component logs both info and error messages. If set to Error, only errors are logged.
+    - _Enable Logs_ - Enables or disables logging ONE Server messages to console.
 
 2. _Example_
 
-    This game object has the __OneIntegrationExample__ component and runs the test sequence of communication with the Arcus Client (see [Fake Agent](https://github.com/i3D-net/ONE-GameHosting-SDK/tree/master/one/agent)).
+    This Game Object has a __OneIntegrationExample__ Component and runs the test sequence of communication with an Arcus Client.
 
-## OneIntegrationExample component ##
+## OneIntegrationExample Component ##
 
 ___Start___ triggers the _Simulation_ routine.
 

@@ -8,6 +8,9 @@ using UnityEditor;
 
 namespace i3D.Example
 {
+    /// <summary>
+    /// Simulates a fake game server instance and shows how to integrate and interact with the i3D ONE Arcus Server.
+    /// </summary>
     public class OneIntegrationExample : MonoBehaviour
     {
         [SerializeField]
@@ -29,18 +32,23 @@ namespace i3D.Example
                 server.SetPort(port);
             }
 
-            // Start the server.
+            // Start the Arcus Server. Note, if the Component's RunOnAwake flag is set to true then this is
+            // not needed. The example has the flag set to false to illustrate explicit running of the
+            // Server so that the port can be set first (above).
+            // The Server will listen for an Arcus Client.
             server.Run();
         }
 
         private void Start()
         {
-            // Start simulating server behavior.
+            // Start simulating game server behavior.
             // Here all the calls to the SDK are done within a coroutine just to give a clear example in one place.
             // In a real project, these calls can be done from any suitable place, including Update.
             StartCoroutine(Simulation());
 
             LogWithTimestamp(string.Format("Server status: {0}", server.Status));
+
+            // Initialize the cached status of the server to check if it needs to be logged later.
             _lastStatus = server.Status;
         }
 
@@ -93,7 +101,10 @@ namespace i3D.Example
         /// </summary>
         private IEnumerator Simulation()
         {
-            // Wait for the agent to connect.
+            // Wait for the agent to connect. A real game server does not need to wait for a connection.
+            // The wait here is done for testing purposes so that the state changes in the code below will be
+            // logged on a connected Arcus Agent (e.g. a connected Fake Agent). Without waiting, only the final
+            // state would reach the Agent upon connection.
             yield return new WaitUntil(() => server.Status == OneServerStatus.OneServerStatusReady);
 
             // Simulate the server starting up by sending the OneServerStarting status.
@@ -111,10 +122,10 @@ namespace i3D.Example
                                            (int) OneApplicationInstanceStatus.OneServerOnline));
             server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerOnline);
 
-            // Send the test live state data to the agent.
+            // Send the test Live State data to the agent.
             SendLiveState(1, 5, "Example", "Example map", "Example mode", "v0.1");
 
-            // Regularly send live state updates with random number of players.
+            // Regularly send Live State updates with a random number of players.
             while (true)
             {
                 yield return new WaitForSeconds(2f);
@@ -126,6 +137,7 @@ namespace i3D.Example
 
         private void OnEnable()
         {
+            // Subscribe to notifications from the One Server.
             server.SoftStopReceived += OnServerSoftStopReceived;
             server.AllocatedReceived += OnServerAllocatedReceived;
             server.MetadataReceived += OnServerMetadataReceived;
@@ -135,6 +147,7 @@ namespace i3D.Example
 
         private void OnDisable()
         {
+            // Unsubscribe.
             server.SoftStopReceived -= OnServerSoftStopReceived;
             server.AllocatedReceived -= OnServerAllocatedReceived;
             server.MetadataReceived -= OnServerMetadataReceived;
@@ -149,6 +162,8 @@ namespace i3D.Example
         {
             LogWithTimestamp(string.Format("Received <b>Soft Stop</b> packet with timeout {0}. Shutting down.", timeout));
 
+            // A real game should gracefully quit as needed by design. For example disallowing new
+            // players to join and waiting until the match ends.
 #if UNITY_EDITOR
             // In the Editor, when a soft stop packet received, stop playing the game.
             EditorApplication.isPlaying = false;
@@ -163,13 +178,16 @@ namespace i3D.Example
         /// </summary>
         private void OnServerAllocatedReceived(OneArray metadata)
         {
+            // Extracting keys from the metadata is optional. These are example values sent from the Fake Agent.
+            // A real game may or may not have custom key values, as needed.
             LogWithTimestamp(string.Format("Received <b>Allocated</b> packet with metadata:\n{0} : {1}\n{2} : {3}",
                                            metadata.GetObject(0).GetString("key"),
                                            metadata.GetObject(0).GetString("value"),
                                            metadata.GetObject(1).GetString("key"),
                                            metadata.GetObject(1).GetString("value")));
 
-            StartCoroutine(BecomeAllocatedAfter(3));
+            // Confirm that the server has acknowledged by sending OneServerAllocated status.
+            server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerAllocated);
         }
 
         /// <summary>
@@ -177,6 +195,8 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerMetadataReceived(OneArray metadata)
         {
+            // Extracting keys from the metadata is optional. These are example values sent from the Fake Agent.
+            // A real game may or may not have custom key values, as needed.
             LogWithTimestamp(string.Format("Received <b>Metadata</b> packet:\n" +
                                            "key : \"{0}\", valid : {1}, message_number : {2}\n" +
                                            "Data: {3}, {4}, \"{5}\"",
@@ -193,6 +213,8 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerHostInformationReceived(OneObject payload)
         {
+            // Extracting keys from the payload is optional. A real game may or may not be interested in host
+            // information key values.
             LogWithTimestamp(string.Format("Received <b>Host Information</b> packet with payload:\n" +
                                            "id : {0}, serverId : {1}",
                                            payload.GetInt("id"),
@@ -204,6 +226,8 @@ namespace i3D.Example
         /// </summary>
         private static void OnServerApplicationInstanceInformationReceived(OneObject payload)
         {
+            // Extracting keys from the payload is optional. A real game may or may not be interested in application
+            // instance information key values.
             LogWithTimestamp(string.Format("Received <b>Application Instance Information</b> packet with payload:\n" +
                                            "fleetId: \"{0}\", hostId: {1}",
                                            payload.GetString("fleetId"),
@@ -219,19 +243,10 @@ namespace i3D.Example
                                            "serverName = {2}, map = {3}, gameMode = {4}, version = {5}",
                                            players, maxPlayers, serverName, map, gameMode, version));
 
+            // It is safe to call this every frame if it is easier to do so - the values are only
+            // sent to the Agent if they have changed.
+            // The final parameter can be used to send additional custom key/value pairs.
             server.SetLiveState(players, maxPlayers, serverName, map, gameMode, version, null);
-        }
-
-        /// <summary>
-        /// Routine to wait and send the Allocated status update.
-        /// </summary>
-        private IEnumerator BecomeAllocatedAfter(float seconds)
-        {
-            // Simulate the server working.
-            yield return new WaitForSeconds(seconds);
-
-            // Simulate the server becoming allocated by a matchmaker by sending OneServerAllocated status.
-            server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerAllocated);
         }
 
         /// <summary>

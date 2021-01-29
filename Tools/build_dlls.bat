@@ -1,5 +1,6 @@
 @REM This script runs the libraries building sequense on the SDK side.
-@REM It requires Docker installed. The path to the SDK repository has to be provided as the argument.
+@REM It requires Docker installed. The path to the SDK repository has to be 
+@REM provided as the argument.
 
 SET DllsPath="..\ONE SDK Plugin\Assets\Plugins\i3D\"
 SET BuildBatchDir="Tools"

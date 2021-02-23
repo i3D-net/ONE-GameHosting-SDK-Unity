@@ -5,13 +5,25 @@ namespace i3D
 {
     public partial class OneServerWrapper
     {
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneLoggerAction(IntPtr data, int level, IntPtr log);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneSoftStopAction(IntPtr data, int timeout);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneArrayAction(IntPtr data, IntPtr array);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneObjectAction(IntPtr data, IntPtr obj);
+
         private const string DllName = "one_arcus";
 
         [DllImport(DllName)]
         private static extern int one_server_create(ushort port, out IntPtr server);
 
         [DllImport(DllName)]
-        private static extern int one_server_set_logger(IntPtr server, Action<IntPtr, int, IntPtr> logger, IntPtr userdata);
+        private static extern int one_server_set_logger(IntPtr server, OneLoggerAction logger, IntPtr userdata);
 
         [DllImport(DllName)]
         private static extern void one_server_destroy(IntPtr server);
@@ -33,22 +45,22 @@ namespace i3D
 
         [DllImport(DllName)]
         private static extern int one_server_set_soft_stop_callback(
-            IntPtr server, Action<IntPtr, int> callback, IntPtr data);
+            IntPtr server, OneSoftStopAction callback, IntPtr data);
 
         [DllImport(DllName)]
         private static extern int one_server_set_allocated_callback(
-            IntPtr server, Action<IntPtr, IntPtr> callback, IntPtr data);
+            IntPtr server, OneArrayAction callback, IntPtr data);
 
         [DllImport(DllName)]
         private static extern int one_server_set_metadata_callback(
-            IntPtr server, Action<IntPtr, IntPtr> callback, IntPtr data);
+            IntPtr server, OneArrayAction callback, IntPtr data);
 
         [DllImport(DllName)]
         private static extern int one_server_set_host_information_callback(
-            IntPtr server, Action<IntPtr, IntPtr> callback, IntPtr data);
+            IntPtr server, OneObjectAction callback, IntPtr data);
 
         [DllImport(DllName)]
         private static extern int one_server_set_application_instance_information_callback(
-            IntPtr server, Action<IntPtr, IntPtr> callback, IntPtr data);
+            IntPtr server, OneObjectAction callback, IntPtr data);
     }
 }

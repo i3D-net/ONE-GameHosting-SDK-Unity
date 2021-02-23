@@ -22,6 +22,7 @@ The documentation for the entire ONE Platform can be found [here](https://www.i3
 Supported platforms:
     - Windows 10 Pro
     - Ubuntu 18.04
+
 ## <a name="requirements"></a> Requirements ##
 
 1. Minimum compatible Unity version: 2017.4.40f1.
@@ -32,7 +33,7 @@ Supported platforms:
 
 ## <a name="integration-guide"></a> Integration guide ##
 
-1. Clone this repository or simply download [the Unity package](/ONE-GameHosting-SDK_v0.9.unitypackage) from the online repository.
+1. Clone this repository or simply download [the Unity package](/ONE-GameHosting-SDK_v0.9.3.unitypackage) from the online repository.
 2. In Unity Editor, select _Assets > Import Package > Custom Package..._ menu.
 3. Select the package from step 1 and click _Open_.
 4. In the opened window, click _Import_.

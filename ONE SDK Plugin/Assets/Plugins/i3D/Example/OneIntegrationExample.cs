@@ -198,14 +198,15 @@ namespace i3D.Example
             // Extracting keys from the metadata is optional. These are example values sent from the Fake Agent.
             // A real game may or may not have custom key values, as needed.
             LogWithTimestamp(string.Format("Received <b>Metadata</b> packet:\n" +
-                                           "key : \"{0}\", valid : {1}, message_number : {2}\n" +
-                                           "Data: {3}, {4}, \"{5}\"",
+                                           "(key : \"{0}\", value : \"{1}\")\n" +
+                                           "(key : \"{2}\", value : \"{3}\")\n" +
+                                           "(key : \"{4}\", value : \"{5}\")\n",
                                            metadata.GetObject(0).GetString("key"),
-                                           metadata.GetObject(0).GetBool("valid"),
-                                           metadata.GetObject(0).GetInt("message_number"),
-                                           metadata.GetObject(0).GetArray("data").GetBool(0),
-                                           metadata.GetObject(0).GetArray("data").GetInt(1),
-                                           metadata.GetObject(0).GetArray("data").GetString(2)));
+                                           metadata.GetObject(0).GetString("value"),
+                                           metadata.GetObject(1).GetString("key"),
+                                           metadata.GetObject(1).GetString("value"),
+                                           metadata.GetObject(2).GetString("key"),
+                                           metadata.GetObject(2).GetString("value")));
         }
 
         /// <summary>

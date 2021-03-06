@@ -1,4 +1,4 @@
-# i3D.net ONE Game Hosting SDK Unity Plug-in #
+# i3D.net ONE Game Hosting SDK Unity Plugin #
 
 **Version: v0.9 (Beta)**
 
@@ -8,14 +8,14 @@
 
 ## Overview ##
 
-The plug-in provides Unity game servers with the ability to communicate over TCP with the i3D.net ONE Platform, for easy and efficient scaling of game servers.
+The plugin provides Unity game servers with the ability to communicate over TCP with the i3D.net ONE Platform, for easy and efficient scaling of game servers.
 
-- [Integration guide](#integration-guide) - How to integrate the plug-in into a game server.
-- [Sample game](/ONE%20SDK%20Plugin/Assets/Plugins/i3D/Example) - An example of how to use the plug-in.
+- [Integration guide](#integration-guide) - How to integrate the plugin into a game server.
+- [Sample game](/ONE%20SDK%20Plugin/Assets/Plugins/i3D/Example) - An example of how to use the plugin.
 - [Package export](#package-export) - How to create a new package.
 
 The i3D.net Game Hosting SDK works on Windows and Linux.
-If something doesn’t work, please [file an issue](https://github.com/i3D-net/ONE-GameHosting-SDK/issues).
+If something doesn’t work, please [file an issue](https://github.com/i3D-net/ONE-GameHosting-SDK-Unity/issues).
 
 The documentation for the entire ONE Platform can be found [here](https://www.i3d.net/docs/one/).
 

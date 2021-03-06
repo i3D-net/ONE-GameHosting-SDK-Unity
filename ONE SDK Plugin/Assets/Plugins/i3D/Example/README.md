@@ -1,4 +1,4 @@
-# Intergation example #
+# Integration #
 
 This example shows how to use the ONE SDK in a Unity project: how to create a server and communicate with an Arcus Client.
 

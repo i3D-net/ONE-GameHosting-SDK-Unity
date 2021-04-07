@@ -310,7 +310,7 @@ namespace i3D
         }
 
         /// <summary>
-        /// Retrieves the <see cref="OneArray"/> value from the array.
+        /// Retrieves the <see cref="OneArray"/> value from the array. Should be disposed.
         /// </summary>
         public OneArray GetArray(uint position)
         {
@@ -323,7 +323,7 @@ namespace i3D
         }
 
         /// <summary>
-        /// Retrieves the <see cref="OneObject"/> value from the array.
+        /// Retrieves the <see cref="OneObject"/> value from the array. Should be disposed.
         /// </summary>
         public OneObject GetObject(uint position)
         {

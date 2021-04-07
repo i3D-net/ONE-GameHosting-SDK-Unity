@@ -188,7 +188,7 @@ namespace i3D
         }
 
         /// <summary>
-        /// Retrieves the <see cref="OneArray"/> value from the object.
+        /// Retrieves the <see cref="OneArray"/> value from the object. Should be disposed.
         /// </summary>
         public OneArray GetArray(string key)
         {
@@ -206,7 +206,7 @@ namespace i3D
         }
 
         /// <summary>
-        /// Retrieves the <see cref="OneObject"/> value from the object.
+        /// Retrieves the <see cref="OneObject"/> value from the object. Should be disposed.
         /// </summary>
         public OneObject GetObject(string key)
         {

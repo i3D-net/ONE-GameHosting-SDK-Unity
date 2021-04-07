@@ -180,11 +180,15 @@ namespace i3D.Example
         {
             // Extracting keys from the metadata is optional. These are example values sent from the Fake Agent.
             // A real game may or may not have custom key values, as needed.
-            LogWithTimestamp(string.Format("Received <b>Allocated</b> packet with metadata:\n{0} : {1}\n{2} : {3}",
-                                           metadata.GetObject(0).GetString("key"),
-                                           metadata.GetObject(0).GetString("value"),
-                                           metadata.GetObject(1).GetString("key"),
-                                           metadata.GetObject(1).GetString("value")));
+            using (var obj0 = metadata.GetObject(0))
+            using (var obj1 = metadata.GetObject(1))
+            {
+                LogWithTimestamp(string.Format("Received <b>Allocated</b> packet with metadata:\n{0} : {1}\n{2} : {3}",
+                                               obj0.GetString("key"),
+                                               obj0.GetString("value"),
+                                               obj1.GetString("key"),
+                                               obj1.GetString("value")));
+            }
 
             // Confirm that the server has acknowledged by sending OneServerAllocated status.
             server.SetApplicationInstanceStatus(OneApplicationInstanceStatus.OneServerAllocated);
@@ -197,16 +201,21 @@ namespace i3D.Example
         {
             // Extracting keys from the metadata is optional. These are example values sent from the Fake Agent.
             // A real game may or may not have custom key values, as needed.
-            LogWithTimestamp(string.Format("Received <b>Metadata</b> packet:\n" +
-                                           "(key : \"{0}\", value : \"{1}\")\n" +
-                                           "(key : \"{2}\", value : \"{3}\")\n" +
-                                           "(key : \"{4}\", value : \"{5}\")\n",
-                                           metadata.GetObject(0).GetString("key"),
-                                           metadata.GetObject(0).GetString("value"),
-                                           metadata.GetObject(1).GetString("key"),
-                                           metadata.GetObject(1).GetString("value"),
-                                           metadata.GetObject(2).GetString("key"),
-                                           metadata.GetObject(2).GetString("value")));
+            using (var obj0 = metadata.GetObject(0))
+            using (var obj1 = metadata.GetObject(1))
+            using (var obj2 = metadata.GetObject(2))
+            {
+                LogWithTimestamp(string.Format("Received <b>Metadata</b> packet:\n" +
+                                               "(key : \"{0}\", value : \"{1}\")\n" +
+                                               "(key : \"{2}\", value : \"{3}\")\n" +
+                                               "(key : \"{4}\", value : \"{5}\")\n",
+                                               obj0.GetString("key"),
+                                               obj0.GetString("value"),
+                                               obj1.GetString("key"),
+                                               obj1.GetString("value"),
+                                               obj2.GetString("key"),
+                                               obj2.GetString("value")));
+            }
         }
 
         /// <summary>

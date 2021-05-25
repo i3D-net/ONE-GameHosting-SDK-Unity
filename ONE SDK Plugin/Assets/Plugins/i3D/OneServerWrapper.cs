@@ -178,10 +178,10 @@ namespace i3D
 
         private static void LogCallback(IntPtr data, int level, IntPtr log)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
+            OneServerWrapper server;
 
-            var server = Servers[data];
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
 
             if (server._logCallback == null)
                 return;
@@ -196,10 +196,10 @@ namespace i3D
 
         private static void SoftStopCallback(IntPtr data, int timeout)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
+            OneServerWrapper server;
 
-            var server = Servers[data];
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
 
             if (server.SoftStopReceived != null)
                 server.SoftStopReceived(timeout);
@@ -207,10 +207,10 @@ namespace i3D
 
         private static void AllocatedCallback(IntPtr data, IntPtr array)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
+            OneServerWrapper server;
 
-            var server = Servers[data];
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
 
             if (server.AllocatedReceived != null)
                 server.AllocatedReceived(new OneArray(array));
@@ -218,10 +218,10 @@ namespace i3D
 
         private static void MetadataCallback(IntPtr data, IntPtr array)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
+            OneServerWrapper server;
 
-            var server = Servers[data];
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
 
             if (server.MetadataReceived != null)
                 server.MetadataReceived(new OneArray(array));
@@ -229,10 +229,10 @@ namespace i3D
 
         private static void HostInformationCallback(IntPtr data, IntPtr obj)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
+            OneServerWrapper server;
 
-            var server = Servers[data];
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
 
             if (server.HostInformationReceived != null)
                 server.HostInformationReceived(new OneObject(obj));
@@ -240,10 +240,10 @@ namespace i3D
 
         private static void ApplicationInstanceInformationCallback(IntPtr data, IntPtr obj)
         {
-            if (!Servers.ContainsKey(data))
-                throw new InvalidOperationException("Cannot find OneServer instance");
+            OneServerWrapper server;
 
-            var server = Servers[data];
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
 
             if (server.ApplicationInstanceInformationReceived != null)
                 server.ApplicationInstanceInformationReceived(new OneObject(obj));

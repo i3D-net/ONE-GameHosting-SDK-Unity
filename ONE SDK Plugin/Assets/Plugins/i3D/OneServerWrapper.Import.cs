@@ -6,6 +6,15 @@ namespace i3D
     public partial class OneServerWrapper
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneGlobalAlloc(uint bytes);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneGlobalFree(IntPtr ptr);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void OneGlobalRealloc(IntPtr ptr, uint bytes);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void OneLoggerAction(IntPtr data, int level, IntPtr log);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -18,6 +27,17 @@ namespace i3D
         private delegate void OneObjectAction(IntPtr data, IntPtr obj);
 
         private const string DllName = "one_arcus";
+
+        // The following functions will set the global allocation callbacks used by the one_arcus lib.
+        [DllImport(DllName)]
+        private static extern int one_allocator_set_alloc(OneGlobalAlloc alloc);
+
+        [DllImport(DllName)]
+        private static extern int one_allocator_set_free(OneGlobalFree free);
+
+        [DllImport(DllName)]
+        private static extern int one_allocator_set_realloc(OneGlobalRealloc realloc);
+        // Global allocation callbacks end.
 
         [DllImport(DllName)]
         private static extern int one_server_create(ushort port, out IntPtr server);

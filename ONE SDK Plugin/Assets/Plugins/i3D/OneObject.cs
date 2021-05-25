@@ -170,21 +170,20 @@ namespace i3D
         {
             int size = GetStringSize(key);
             
-            var result8 = new Utf8ByteArray(size);
-            int code;
-
-            using (var key8 = new Utf8ByteArray(key))
+            using (var result8 = new Utf8ByteArray(size))
             {
-                code = one_object_val_string(_ptr, key8, result8, size);
+                int code;
+
+                using (var key8 = new Utf8ByteArray(key))
+                {
+                    code = one_object_val_string(_ptr, key8, result8, size);
+                }
+
+                OneErrorValidator.Validate(code);
+
+                result8.ReadPtr();
+                return result8.ToString();
             }
-
-            OneErrorValidator.Validate(code);
-
-            result8.ReadPtr();
-            var result = result8.ToString();
-            result8.Dispose();
-
-            return result;
         }
 
         /// <summary>

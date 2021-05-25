@@ -58,11 +58,13 @@ Optional - for developers that need to recompile the C++ source used by the plug
 
 The libraries are built using the [SDK source code](https://github.com/i3D-net/ONE-GameHosting-SDK).
 
-[_build_dlls.bat_](/Tools/build_dlls.bat) can be used to build all necessary native assemblies on Windows. Docker must be installed (see [Requirements](#requirements)).
+[_build_sdk_dlls.bat_](/Tools/build_sdk_dlls.bat) can be used to build all necessary native assemblies on Windows. Docker must be installed (see [Requirements](#requirements)).
+[_build_client_sdk_dlls.bat_](/Tools/build_client_sdk_dlls.bat) can be used to build all necessary native assemblies on Windows. Docker must be installed (see [Requirements](#requirements)).
 
 For example:
 ```bat
-build_dlls.bat C:\path_to_sdk
+build_sdk_dlls.bat C:\path_to_sdk
+build_client_sdk_dlls.bat C:\path_to_sdk
 ```
 
 ## <a name="package-export"></a> Package export ##

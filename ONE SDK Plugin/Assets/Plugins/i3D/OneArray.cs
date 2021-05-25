@@ -297,16 +297,14 @@ namespace i3D
         {
             int size = GetStringSize(position);
 
-            var result8 = new Utf8ByteArray(size);
+            using (var result8 = new Utf8ByteArray(size))
+            {
+                int code = one_array_val_string(_ptr, position, result8, size);
+                OneErrorValidator.Validate(code);
 
-            int code = one_array_val_string(_ptr, position, result8, size);
-            OneErrorValidator.Validate(code);
-
-            result8.ReadPtr();
-            var result = result8.ToString();
-            result8.Dispose();
-
-            return result;
+                result8.ReadPtr();
+                return result8.ToString();
+            }
         }
 
         /// <summary>

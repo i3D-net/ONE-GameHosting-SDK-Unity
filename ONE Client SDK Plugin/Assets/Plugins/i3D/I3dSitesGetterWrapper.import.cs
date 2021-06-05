@@ -36,20 +36,17 @@ namespace i3D
         // Global allocation callbacks end.
 
         [DllImport(DllName)]
-        private static extern int i3d_ping_sites_getter_create(out IntPtr sitesGetter);
+        private static extern int i3d_ping_sites_getter_create(out IntPtr sitesGetter, I3dHttpGetCallback callback, IntPtr userdata);
         [DllImport(DllName)]
         private static extern int i3d_ping_sites_getter_set_logger(IntPtr sitesGetter, I3dLoggerAction logCb, IntPtr userdata);
         [DllImport(DllName)]
         private static extern int i3d_ping_sites_getter_destroy(IntPtr sitesGetter);
-        [DllImport(DllName)]
-        private static extern int i3d_ping_sites_getter_init(IntPtr sitesGetter);
+
         [DllImport(DllName)]
         private static extern int i3d_ping_sites_getter_update(IntPtr sitesGetter);
         [DllImport(DllName)]
         private static extern int i3d_ping_sites_getter_status(IntPtr sitesGetter, out IntPtr status);
 
-        [DllImport(DllName)]
-        private static extern int i3d_ping_sites_getter_set_http_get_callback(IntPtr sitesGetter, I3dHttpGetCallback callback, IntPtr userdata);
         [DllImport(DllName)]
         private static extern int i3d_ping_sites_getter_site_list_size(IntPtr sitesGetter, out uint size);
         [DllImport(DllName)]

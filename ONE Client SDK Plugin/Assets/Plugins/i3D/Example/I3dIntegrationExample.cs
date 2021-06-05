@@ -12,6 +12,7 @@ namespace i3D.Example
     /// </summary>
     public class I3dIntegrationExample : MonoBehaviour
     {
+        private bool _pingers_created;
         private I3dIpList _ipList;
 
         private I3dPingersWrapper _pingers;
@@ -21,40 +22,42 @@ namespace i3D.Example
 
         private void Update()
         {
-            I3dPingersStatus status = _pingers.Status;
-            
-            LogWithTimestamp(string.Format("Pingers status: {0}", status));
+            if (_pingers_created) {
+                I3dPingersStatus status = _pingers.Status;
 
-            // When the pinger is initialized it is ready to ping the sites.
-            if (status == I3dPingersStatus.I3dPingersStatusInitialized) {
-                LogWithTimestamp("Updating pingers");
-                _pingers.Update();
+                LogWithTimestamp(string.Format("Pingers status: {0}", status));
 
-                if (_pingers.AtLeastOneSiteHasBeenPinged()) {
-                    LogWithTimestamp("pingers at least one pinged");
-                }
+                // When the pinger is initialized it is ready to ping the sites.
+                if (status == I3dPingersStatus.I3dPingersStatusInitialized) {
+                    LogWithTimestamp("Updating pingers");
+                    _pingers.Update();
 
-                if (_pingers.AllSitesHaveBeenPigned()) {
-                    LogWithTimestamp("pingers all pinged");
-
-                    uint size = _pingers.Size();
-                    int lastTime = 0;
-                    double averageTime = 0.0;
-                    int minTime = 0;
-                    int maxTime = 0;
-                    double medianTime = 0.0;
-                    uint pingResponseCount = 0;
-
-                    for (uint i = 0; i < size; ++i) {
-                        _pingers.Statistics(i, out lastTime, out averageTime, out minTime, out maxTime, out medianTime, out pingResponseCount);
-                        var hostname = sitesGetter.Wrapper.GetHostname(i);
-                        LogWithTimestamp(string.Format("Site statistics: {0}, {1}, {2}, {3}, {4}, {5}, {6}", hostname, lastTime, averageTime, minTime, maxTime, medianTime, pingResponseCount));
+                    if (_pingers.AtLeastOneSiteHasBeenPinged()) {
+                        LogWithTimestamp("pingers at least one pinged");
                     }
 
-                    LogWithTimestamp("------------------");
-                }
+                    if (_pingers.AllSitesHaveBeenPigned()) {
+                        LogWithTimestamp("pingers all pinged");
 
-                return;
+                        uint size = _pingers.Size();
+                        int lastTime = 0;
+                        double averageTime = 0.0;
+                        int minTime = 0;
+                        int maxTime = 0;
+                        double medianTime = 0.0;
+                        uint pingResponseCount = 0;
+
+                        for (uint i = 0; i < size; ++i) {
+                            _pingers.Statistics(i, out lastTime, out averageTime, out minTime, out maxTime, out medianTime, out pingResponseCount);
+                            var hostname = sitesGetter.Wrapper.GetHostname(i);
+                            LogWithTimestamp(string.Format("Site statistics: {0}, {1}, {2}, {3}, {4}, {5}, {6}", hostname, lastTime, averageTime, minTime, maxTime, medianTime, pingResponseCount));
+                        }
+
+                        LogWithTimestamp("------------------");
+                    }
+
+                    return;
+                }
             }
 
             // When the SitesGetter is Ready it has fetch the sites information
@@ -62,7 +65,8 @@ namespace i3D.Example
             if (sitesGetter.Status == I3dSitesGetterStatus.I3dSitesGetterReady) {
                 _ipList.Clear();
                 sitesGetter.ipv4List(_ipList);
-                _pingers.Init(_ipList);
+                _pingers = new I3dPingersWrapper(null, _ipList);
+                _pingers_created = true;
                 LogWithTimestamp("Pingers initialized");
                 return;
             }
@@ -74,14 +78,17 @@ namespace i3D.Example
 
         private void OnEnable()
         {
+            _pingers_created = false;
             _ipList = new I3dIpList();
-            _pingers = new I3dPingersWrapper();
         }
 
         private void OnDisable()
         {
             _ipList.Dispose();
-            _pingers.Dispose();
+
+            if (_pingers_created) {
+                _pingers.Dispose();
+            }
         }
 
         /// <summary>

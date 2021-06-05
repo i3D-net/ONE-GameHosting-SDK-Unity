@@ -19,38 +19,9 @@ namespace i3D
         /// Initializes a new instance of the <see cref="I3dSitesGetterWrapper"/> class.
         /// Should be disposed.
         /// </summary>
-        public I3dSitesGetterWrapper() : this(null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="I3dSitesGetterWrapper"/> class.
-        /// Should be disposed.
-        /// </summary>
         /// <param name="logCallback">The logging callback.</param>
-        public I3dSitesGetterWrapper(Action<I3dLogLevel, string> logCallback)
+        public I3dSitesGetterWrapper()
         {
-            _logCallback = logCallback;
-
-            int code = i3d_ping_sites_getter_create(out _ptr);
-            I3dErrorValidator.Validate(code);
-
-            code = i3d_ping_sites_getter_set_logger(_ptr, LogCallback, _ptr);
-            I3dErrorValidator.Validate(code);
-
-            lock (SitesGetter)
-            {
-                SitesGetter.Add(_ptr, this);
-            }
-        }
-
-        public void Init(I3dHttpGetCallback callback, IntPtr userdata)
-        {
-            int code = i3d_ping_sites_getter_set_http_get_callback(_ptr, callback, userdata);
-            I3dErrorValidator.Validate(code);
-
-            code = i3d_ping_sites_getter_init(_ptr);
-            I3dErrorValidator.Validate(code);
         }
 
         /// <summary>
@@ -63,6 +34,25 @@ namespace i3D
             lock (SitesGetter)
             {
                 SitesGetter.Remove(_ptr);
+            }
+        }
+
+        /// <summary>
+        /// Init an instance of the <see cref="I3dSitesGetterWrapper"/> class.
+        /// </summary>
+        public void Init(Action<I3dLogLevel, string> logCallback, I3dHttpGetCallback callback, IntPtr userdata)
+        {
+            _logCallback = logCallback;
+
+            int code = i3d_ping_sites_getter_create(out _ptr, callback, userdata);
+            I3dErrorValidator.Validate(code);
+
+            code = i3d_ping_sites_getter_set_logger(_ptr, LogCallback, _ptr);
+            I3dErrorValidator.Validate(code);
+
+            lock (SitesGetter)
+            {
+                SitesGetter.Add(_ptr, this);
             }
         }
 
@@ -241,8 +231,8 @@ namespace i3D
             sitesGetter._logCallback(logLevel, new Utf8ByteArray(log).ToString());
         }
 
-        private readonly IntPtr _ptr;
-        private readonly Action<I3dLogLevel, string> _logCallback;
+        private IntPtr _ptr;
+        private Action<I3dLogLevel, string> _logCallback;
         private static readonly Dictionary<IntPtr, I3dSitesGetterWrapper> SitesGetter = new Dictionary<IntPtr, I3dSitesGetterWrapper>();
 
     }

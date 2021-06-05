@@ -10,23 +10,15 @@ namespace i3D
     public partial class I3dPingersWrapper : IDisposable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="I3dPingersWrapper"/> class.
-        /// Should be disposed.
-        /// </summary>
-        public I3dPingersWrapper() : this(null)
-        {
-        }
-
-        /// <summary>
         /// Creates a new instance of the <see cref="I3dPingersWrapper"/> class.
         /// Should be disposed.
         /// </summary>
         /// <param name="logCallback">The logging callback.</param>
-        public I3dPingersWrapper(Action<I3dLogLevel, string> logCallback)
+        public I3dPingersWrapper(Action<I3dLogLevel, string> logCallback, I3dIpList ipList)
         {
             _logCallback = logCallback;
 
-            int code = i3d_ping_pingers_create(out _ptr);
+            int code = i3d_ping_pingers_create(out _ptr, ipList.Ptr);
             I3dErrorValidator.Validate(code);
 
             code = i3d_ping_pingers_set_logger(_ptr, LogCallback, _ptr);
@@ -36,15 +28,6 @@ namespace i3D
             {
                 Pingers.Add(_ptr, this);
             }
-        }
-
-        /// <summary>
-        /// Initializes an instance of the <see cref="I3dPingersWrapper"/> class with an I3dIpList.
-        /// </summary>
-        public void Init(I3dIpList ipList)
-        {
-            int code = i3d_ping_pingers_init(_ptr, ipList.Ptr);
-            I3dErrorValidator.Validate(code);
         }
 
         /// <summary>

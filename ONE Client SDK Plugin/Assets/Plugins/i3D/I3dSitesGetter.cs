@@ -51,13 +51,12 @@ namespace i3D
         {
             _wrapper = new I3dSitesGetterWrapper();
             _ptr = _wrapper.Ptr;
+            _wrapper.Init(null, HttpCallback, _ptr);
 
             lock (SitesGetter)
             {
                 SitesGetter.Add(_ptr, this);
             }
-
-            _wrapper.Init(HttpCallback, _ptr);
         }
 
         private void OnDisable()

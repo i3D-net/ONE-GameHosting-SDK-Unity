@@ -11,16 +11,13 @@ namespace i3D
         private const string DllName = "one_ping";
 
         [DllImport(DllName)]
-        private static extern int i3d_ping_pingers_create(out IntPtr pingers);
+        private static extern int i3d_ping_pingers_create(out IntPtr pingers, IntPtr ipList);
 
         [DllImport(DllName)]
         private static extern int i3d_ping_pingers_set_logger(IntPtr pingers, I3dLoggerAction logCb, IntPtr userdata);
 
         [DllImport(DllName)]
         private static extern void i3d_ping_pingers_destroy(IntPtr pingers);
-
-        [DllImport(DllName)]
-        private static extern int i3d_ping_pingers_init(IntPtr pingers, IntPtr ipList);
         
         [DllImport(DllName)]
         private static extern int i3d_ping_pingers_update(IntPtr pingers);

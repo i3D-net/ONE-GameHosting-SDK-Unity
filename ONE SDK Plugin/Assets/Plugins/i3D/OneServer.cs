@@ -60,6 +60,11 @@ namespace i3D
         public event Action<OneObject> ApplicationInstanceInformationReceived;
 
         /// <summary>
+        /// Occurs when the server receives a Custom Command packet.
+        /// </summary>
+        public event Action<OneArray> CustomCommandReceived;
+
+        /// <summary>
         /// Returns the status of the server.
         /// </summary>
         public OneServerStatus Status
@@ -203,6 +208,25 @@ namespace i3D
             _wrapper.SetApplicationInstanceStatus(status);
         }
 
+        /// <summary>
+        /// Send reverse metadata about the game server. This should be called when the game wants to update the metadata to the agent. Thread-safe.
+        /// </summary>
+        /// <param name="map">Current map.</param>
+        /// <param name="mode">Current mode.</param>
+        /// <param name="type">Current type.</param>
+        public void SendReverseMetadata(string map,
+                                        string mode,
+                                        string type)
+        {
+            if (!IsOneEnabled())
+                return;
+
+            if (_wrapper == null)
+                throw new InvalidOperationException("SDK wrapper is null. This component should be enabled in order to make this call.");
+
+            _wrapper.SendReverseMetadata(map, mode, type);
+        }
+
         private void WrapperOnLogReceived(OneLogLevel logLevel, string log)
         {
             if (!enableLogs)
@@ -243,6 +267,12 @@ namespace i3D
                 ApplicationInstanceInformationReceived(payload);
         }
 
+        private void WrapperOnCustomCommandReceived(OneArray data)
+        {
+            if (CustomCommandReceived != null)
+                CustomCommandReceived(data);
+        }
+
         private static string LogLevelToString(OneLogLevel level)
         {
             switch (level)
@@ -270,6 +300,7 @@ namespace i3D
             _wrapper.HostInformationReceived += WrapperOnHostInformationReceived;
             _wrapper.SoftStopReceived += WrapperOnSoftStopReceived;
             _wrapper.ApplicationInstanceInformationReceived += WrapperOnApplicationInstanceInformationReceived;
+            _wrapper.CustomCommandReceived += WrapperOnCustomCommandReceived;
         }
 
         private void ShutdownWrapper()

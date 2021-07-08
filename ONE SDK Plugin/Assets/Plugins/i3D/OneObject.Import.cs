@@ -14,6 +14,12 @@ namespace i3D
         private static extern void one_object_destroy(IntPtr obj);
 
         [DllImport(DllName)]
+        private static extern void one_object_copy(IntPtr obj);
+
+        [DllImport(DllName)]
+        private static extern void one_object_clear(IntPtr obj);
+
+        [DllImport(DllName)]
         private static extern int one_object_is_val_bool(IntPtr obj, IntPtr key, out bool result);
 
         [DllImport(DllName)]

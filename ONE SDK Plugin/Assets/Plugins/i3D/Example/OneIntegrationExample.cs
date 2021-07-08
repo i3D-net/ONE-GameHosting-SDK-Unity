@@ -124,6 +124,7 @@ namespace i3D.Example
 
             // Send the test Live State data to the agent.
             SendLiveState(1, 5, "Example", "Example map", "Example mode", "v0.1");
+            SendReverseMetadata("Example map", "Example mode", "Example type");
 
             // Regularly send Live State updates with a random number of players.
             while (true)
@@ -132,6 +133,7 @@ namespace i3D.Example
 
                 // Send random values simulating changing active player count.
                 SendLiveState(UnityEngine.Random.Range(1, 6), 5, "Example", "Example map", "Example mode", "v0.1");
+                SendReverseMetadata("Example map", "Example mode", "Example type");
             }
         }
 
@@ -143,6 +145,7 @@ namespace i3D.Example
             server.MetadataReceived += OnServerMetadataReceived;
             server.HostInformationReceived += OnServerHostInformationReceived;
             server.ApplicationInstanceInformationReceived += OnServerApplicationInstanceInformationReceived;
+            server.CustomCommandReceived += OnCustomCommandReceived;
         }
 
         private void OnDisable()
@@ -153,6 +156,7 @@ namespace i3D.Example
             server.MetadataReceived -= OnServerMetadataReceived;
             server.HostInformationReceived -= OnServerHostInformationReceived;
             server.ApplicationInstanceInformationReceived -= OnServerApplicationInstanceInformationReceived;
+            server.CustomCommandReceived -= OnCustomCommandReceived;
         }
 
         /// <summary>
@@ -245,6 +249,26 @@ namespace i3D.Example
         }
 
         /// <summary>
+        /// CustomCommandReceived event handler.
+        /// </summary>
+        private static void OnCustomCommandReceived(OneArray data)
+        {
+            // Extracting keys from the custom command is optional. These are example values sent from the Fake Agent.
+            // A real game may or may not have custom key values, as needed.
+            using (var obj0 = data.GetObject(0))
+            using (var obj1 = data.GetObject(1))
+            {
+                LogWithTimestamp(string.Format("Received <b>custom command</b> packet:\n" +
+                                               "(key : \"{0}\", value : \"{1}\")\n" +
+                                               "(key : \"{2}\", value : \"{3}\")\n",
+                                               obj0.GetString("key"),
+                                               obj0.GetString("value"),
+                                               obj1.GetString("key"),
+                                               obj1.GetString("value")));
+            }
+        }
+
+        /// <summary>
         /// Helper method that wraps sending of the Live State update and logging of this action.
         /// </summary>
         private void SendLiveState(int players, int maxPlayers, string serverName, string map, string gameMode, string version)
@@ -257,6 +281,21 @@ namespace i3D.Example
             // sent to the Agent if they have changed.
             // The final parameter can be used to send additional custom key/value pairs.
             server.SetLiveState(players, maxPlayers, serverName, map, gameMode, version, null);
+        }
+
+        /// <summary>
+        /// Helper method that wraps sending of the Live State update and logging of this action.
+        /// </summary>
+        private void SendReverseMetadata(string map, string mode, string type)
+        {
+            LogWithTimestamp(string.Format("Sending <b>Rreverse metadata</b>: map = {0}, mode = {1}, " +
+                                           "type = {2}",
+                                           map, mode, type));
+
+            // It is safe to call this every frame if it is easier to do so - the values are only
+            // sent to the Agent if they have changed.
+            // The final parameter can be used to send additional custom key/value pairs.
+            server.SendReverseMetadata(map, mode, type);
         }
 
         /// <summary>

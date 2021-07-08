@@ -37,6 +37,11 @@ namespace i3D
         /// </summary>
         public event Action<OneObject> ApplicationInstanceInformationReceived;
 
+        /// <summary>
+        /// Occurs when the server receives a Custom Command packet.
+        /// </summary>
+        public event Action<OneArray> CustomCommandReceived;
+
         private readonly IntPtr _ptr;
         private readonly Action<OneLogLevel, string> _logCallback;
         private readonly ushort _port;
@@ -116,6 +121,9 @@ namespace i3D
             code = one_server_set_application_instance_information_callback(
                 _ptr, ApplicationInstanceInformationCallback, _ptr);
             OneErrorValidator.Validate(code);
+
+            code = one_server_set_custom_command_callback(_ptr, CustomCommandCallback, _ptr);
+            OneErrorValidator.Validate(code);
         }
 
         /// <summary>
@@ -172,6 +180,41 @@ namespace i3D
         public void SetApplicationInstanceStatus(OneApplicationInstanceStatus status)
         {
             int code = one_server_set_application_instance_status(_ptr, (int) status);
+
+            OneErrorValidator.Validate(code);
+        }
+
+        /// <summary>
+        /// Send the reverse metadata from game server to the agent. This should be called when the game wants to update the metadata. Thread-safe.
+        /// </summary>
+        /// <param name="map">Current map.</param>
+        /// <param name="mode">Current mode.</param>
+        /// <param name="type">Current type.</param>
+        public void SendReverseMetadata(string map,
+                                        string mode,
+                                        string type)
+        {
+            int code;
+
+            using (var data = new OneArray())
+            using (var mapObject = new OneObject())
+            using (var modeObject = new OneObject())
+            using (var typeObject = new OneObject())
+            using (var map1 = new Utf8ByteArray(map))
+            using (var mode1 = new Utf8ByteArray(mode))
+            using (var type1 = new Utf8ByteArray(type))
+            {
+                mapObject.SetString("key", "map");
+                mapObject.SetString("value", map1.ToString());
+                modeObject.SetString("key", "mode");
+                modeObject.SetString("value", mode1.ToString());
+                typeObject.SetString("key", "type");
+                typeObject.SetString("value", type1.ToString());
+                data.PushObject(mapObject);
+                data.PushObject(modeObject);
+                data.PushObject(typeObject);
+                code = one_server_send_reverse_metadata(_ptr, data.Ptr);
+            }
 
             OneErrorValidator.Validate(code);
         }
@@ -247,6 +290,17 @@ namespace i3D
 
             if (server.ApplicationInstanceInformationReceived != null)
                 server.ApplicationInstanceInformationReceived(new OneObject(obj));
+        }
+
+        private static void CustomCommandCallback(IntPtr data, IntPtr array)
+        {
+            OneServerWrapper server;
+
+            if (!Servers.TryGetValue(data, out server))
+                throw new InvalidOperationException("Cannot find OneServer instance");
+
+            if (server.CustomCommandReceived != null)
+                server.CustomCommandReceived(new OneArray(array));
         }
 
         /// <summary>

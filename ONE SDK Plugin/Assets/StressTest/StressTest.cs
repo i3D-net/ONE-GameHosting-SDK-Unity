@@ -77,6 +77,7 @@ public class StressTest : MonoBehaviour
         while (true)
         {
             server.SetLiveState(UnityEngine.Random.Range(0, 101), 100, "Test", "Test", "Test", "v0.1", null);
+            server.SendReverseMetadata("Example map", "Example mode", "example type");
 
             if (++_stateSentCount % 10000 == 0)
                 Debug.LogFormat("State sent messages: {0}", _stateSentCount);
@@ -88,6 +89,7 @@ public class StressTest : MonoBehaviour
     private void OnEnable()
     {
         server.MetadataReceived += OnServerMetadataReceived;
+        server.CustomCommandReceived += OnCustomCommandReceived;
     }
 
     private void OnDisable()
@@ -99,5 +101,21 @@ public class StressTest : MonoBehaviour
     {
         if (++_metadataReceivedCount % 10000 == 0)
             Debug.LogFormat("Received metadata messages: {0}", _metadataReceivedCount);
+    }
+    private static void OnCustomCommandReceived(OneArray data)
+    {
+        // Extracting keys from the custom command is optional. These are example values sent from the Fake Agent.
+        // A real game may or may not have custom key values, as needed.
+        using (var obj0 = data.GetObject(0))
+        using (var obj1 = data.GetObject(1))
+        {
+            Debug.LogFormat("Received <b>custom command</b> packet:\n" +
+                            "(key : \"{0}\", value : \"{1}\")\n" +
+                            "(key : \"{2}\", value : \"{3}\")\n",
+                            obj0.GetString("key"),
+                            obj0.GetString("value"),
+                            obj1.GetString("key"),
+                            obj1.GetString("value"));
+        }
     }
 }

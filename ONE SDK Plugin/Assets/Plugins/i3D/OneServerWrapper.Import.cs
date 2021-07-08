@@ -60,6 +60,10 @@ namespace i3D
             IntPtr map, IntPtr mode, IntPtr version, IntPtr additional_data);
 
         [DllImport(DllName)]
+        private static extern int one_server_send_reverse_metadata(
+            IntPtr server, IntPtr array);
+
+        [DllImport(DllName)]
         private static extern int one_server_set_application_instance_status(
             IntPtr server, int status);
 
@@ -82,5 +86,9 @@ namespace i3D
         [DllImport(DllName)]
         private static extern int one_server_set_application_instance_information_callback(
             IntPtr server, OneObjectAction callback, IntPtr data);
+
+        [DllImport(DllName)]
+        private static extern int one_server_set_custom_command_callback(
+            IntPtr server, OneArrayAction callback, IntPtr data);
     }
 }

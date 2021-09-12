@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Status of a game server. As defined in:
-    /// https://www.i3d.net/docs/one/odp/Game-Integration/Management-Protocol/Arcus-V2/request-response/#applicationinstance-set-status-request
+    /// https://www.i3d.net/docs/one/odp/Game-Integration/Management-Protocol/Arcus-V2/request-response/#live-state
     /// </summary>
     public enum OneApplicationInstanceStatus
     {
